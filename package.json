@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Build-Week-Farm-Fresh-Produce-Two/Backend#readme",
   "dependencies": {
+    "cloudinary": "^1.18.1",
     "cloudinary-react": "^1.2.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
