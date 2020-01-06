@@ -58,3 +58,35 @@ async function addVideo(tableName, video, insert) {
         throw err;
     }
 }
+
+//upload profile pictures to cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+router.post('/user/picture', (req, res) => {
+    console.log(req.files);
+    const file = req.files.image;
+    
+    cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
+        try{
+            const image = await userDb.addProfilePic({
+                user_id: req.user.id, 
+                url: result.url, 
+                width: result.width,
+                height: result.height,
+                filename: result.original_filename,
+            });
+            if(image){
+                res.status(201).json({profile_picture: result.url});
+            }else{
+                throw 'Image could not be added'
+            }
+        }catch(err){
+            console.log(err);
+            res.status(500).json({message: 'Error adding profile picture'});
+        }
+    });
+});
