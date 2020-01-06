@@ -7,19 +7,22 @@
 There must be at least 3 dashes separating each header cell.
 The outer pipes (|) are optional, and you don't need to make the 
 raw Markdown line up prettily. You can also use inline Markdown. -->
-
 ## users
 | Variable      | Type           | Required |
 | ------------- |:--------------:| --------:|
 | id            | Auto-generated |     True |
 | farmID        | Integer        |     True |
 | isFarmer      | Boolean        |     True |
+| email         | String         |     True |
 | username      | String         |     True |
 | password      | String         |     True |
 | name          | String         |     True |
-| zip code(5)   | Integer        |     True |
-| address       | String         |    False |
+| zipCode       | Integer        |     True |
+| addressStreet | String         |    False |
+| addressCity   | String         |    False |
+| addressState  | String         |    False |
 >farmID optional, required if isFarmer true. There will be a get all farms endpoint where you will get this data from.
+>zipCode: 5 digits
 
 ## farms
 | Variable      | Type           | Required |
@@ -27,8 +30,11 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 | id            | Auto-generated |     True |
 | ownerUserID   | Integer        |     True |
 | name          | String         |     True |
-| address       | String         |     True |
-| zip code(5)   | Integer        |     True |
+| addressStreet | String         |     True |
+| addressCity   | String         |     True |
+| addressState  | String         |     True |
+| zipCode       | Integer        |     True |
+>zipCode: 5 digits
 
 ## products
 | Variable      | Type           | Required |
