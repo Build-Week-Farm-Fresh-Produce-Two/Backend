@@ -43,12 +43,6 @@ exports.down = function(knex) {
 // address city optional
 // address state optional
 
-//products
-// id
-// name required
-// description required
-// imageURL optional
-
 //supply
 // farmID required
 // productID required
