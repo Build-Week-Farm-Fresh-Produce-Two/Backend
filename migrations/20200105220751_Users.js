@@ -42,22 +42,3 @@ exports.down = function(knex) {
 // address street optional
 // address city optional
 // address state optional
-
-//supply
-// farmID required
-// productID required
-// string measurement type (pounds, ounces, etc) required
-// int quantity required
-// int price required
-
-//orders
-// id
-// int farmID required
-// int customerID required
-// int total price required
-// bool paymentStatus required
-// bool fulfillmentStatus required 
-
-//orderedProducts
-// orderID required
-// productID required
