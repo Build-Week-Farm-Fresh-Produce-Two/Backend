@@ -22,33 +22,46 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 >farmID optional, required if isFarmer true. There will be a get all farms endpoint where you will get this data from.
 
 ## farms
-id
-ownerUserID required
-name required
-address required
-5 digit zip code required
+| Variable      | Type           | Required |
+| ------------- |:--------------:| --------:|
+| id            | Auto-generated |     True |
+| ownerUserID   | Integer        |     True |
+| name          | String         |     True |
+| address       | String         |     True |
+| zip code(5)   | Integer        |     True |
 
 ## products
-id
-name required
-description required
-imageURL optional
+| Variable      | Type           | Required |
+| ------------- |:--------------:| --------:|
+| id            | Auto-generated |     True |
+| name          | String         |     True |
+| description   | String         |     True |
+| imageURL      | String         |    False |
+>imageURL optional- I'll give you an endpoint and frontend code for uploading images with Cloudinary
 
 ## supply
-farmID required
-productID required
-string measurement type (pounds, ounces, etc) required
-int quantity required
-int price required
+| Variable        | Type           | Required |
+| --------------- |:--------------:| --------:|
+| id              | Auto-generated |     True |
+| farmID          | Integer        |     True |
+| productID       | Integer        |     True |
+| measurementType | String         |     True |
+| quantity        | Integer        |     True |
+| price           | Integer        |     True |
+>price is per unit of measurement
 
 ## orders
-id
-int farmID required
-int customerID required
-int total price required
-bool paymentStatus required
-bool fulfillmentStatus required 
+| Variable          | Type           | Required |
+| ----------------- |:--------------:| --------:|
+| id                | Auto-generated |     True |
+| farmID            | Integer        |     True |
+| customerID        | Integer        |     True |
+| totalPrice        | Integer        |     True |
+| paymentStatus     | Boolean        |     True |
+| fulfillmentStatus | Boolean        |     True |
 
 ## orderedProducts
-orderID required
-productID required
+| Variable      | Type           | Required |
+| ------------- |:--------------:| --------:|
+| orderID       | Auto-generated |     True |
+| productID     | Integer        |     True |
