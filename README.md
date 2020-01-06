@@ -3,13 +3,13 @@ backend
 methods TBD:
 
 - [ ] users
-    - [ ] -new user
+    - [ ] -new user- if farmer, select farm from dropdown or search
     - [ ] -get user
     - [ ] -update user
-    - [ ] -delete user
+    - [ ] -delete user - farm owner can delete users with their farm ID
 
 - [ ] farms
-    - [ ] -new farm
+    - [ ] -new farm- create owner user at same time
     - [ ] -get farm
     - [ ] -update farm
     - [ ] -delete farm
@@ -28,3 +28,11 @@ methods TBD:
 
     
 endpoints:
+- [ ] users
+    - [ ] 
+- [ ] farms
+    - [ ] 
+- [ ] products
+    - [ ] 
+- [ ] supply
+    - [ ] 
