@@ -43,15 +43,6 @@ exports.down = function(knex) {
 // address city optional
 // address state optional
 
-//farms
-// id
-// ownerUserID required
-// name required
-// address street required
-// address city required
-// address state required
-// 5 digit zip code required
-
 //products
 // id
 // name required
