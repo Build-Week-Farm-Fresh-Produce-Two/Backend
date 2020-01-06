@@ -69,5 +69,5 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 ## orderedProducts
 | Variable      | Type           | Required |
 | ------------- |:--------------:| --------:|
-| orderID       | Auto-generated |     True |
+| orderID       | Integer        |     True |
 | productID     | Integer        |     True |
