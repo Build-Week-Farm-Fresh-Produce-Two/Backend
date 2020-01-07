@@ -1,17 +1,21 @@
 Endpoints:
 - ### users
-    | Path              | Type   | Deployed | AUTH     |
-    | ----------------- |:------ | --------:| --------:|
-    | /auth/register    | POST   |     True | None     |
-    | /auth/login       | POST   |     True | None     |
-    | /users/user/all   | GET    |     True | Required |
+    | Path              | Type    | Deployed | Auth     | Body               | Description                   |
+    | ----------------- |:------:|:--------:|:--------:|:------------------:| ----------------------------- |
+    | /auth/register    | POST   |     True | None     | User               | Create new user               |
+    | /auth/login       | POST   |     True | None     | username, password | Log in, get token             |
+    | /users/:id        | GET    |     True | Required | None               | Get user by ID                |
+    | /users/user       | GET    |     True | Required | None               | Get user by token             |
+    | /users/user       | PUT    |     True | Required | User, password     | Update user by id in req.body |
+    | /users/user       | DELETE |     True | Required | password           | Delete user by id in req.body |
+    | /users/user/all   | GET    |     True | Required | None               | Debug only, return all users  |
     
 - ### farms
-    | Path              | Type   | Deployed | AUTH     |
-    | ----------------- |:------ | --------:| --------:|
+    | Path              | Type   | Deployed | Auth     | Body | Description |
+    | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
 - ### products
-    | Path              | Type   | Deployed | AUTH     |
-    | ----------------- |:------ | --------:| --------:|
+    | Path              | Type   | Deployed | Auth     | Body | Description |
+    | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
 - ### supply
-    | Path              | Type   | Deployed | AUTH     |
-    | ----------------- |:------ | --------:| --------:|
+    | Path              | Type   | Deployed | Auth     | Body | Description |
+    | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
