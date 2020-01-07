@@ -9,5 +9,5 @@ exports.seed = function(knex) {
     {farmID: 3, productID: 1, measurementType: 'pounds', quantity: 40, price: 3.75},
     {farmID: 3, productID: 2, measurementType: 'pounds', quantity: 200, price: 1.90},
     {farmID: 3, productID: 3, measurementType: 'pounds', quantity: 55, price: 6.00},
-  ]);
+  ], 'id');
 };

@@ -7,5 +7,5 @@ exports.seed = function(knex) {
     {farmID: 2, customerID: 3, totalPrice: 3.99, paymentStatus: true, fulfillmentStatus: false },
     {farmID: 2, customerID: 3, totalPrice: 3.99, paymentStatus: true, fulfillmentStatus: false },
     {farmID: 3, customerID: 2, totalPrice: 3.99, paymentStatus: true, fulfillmentStatus: false },
-  ]);
+  ], 'id');
 };

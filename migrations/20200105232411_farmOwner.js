@@ -1,6 +1,7 @@
 
 exports.up = function(knex) {
     return knex.schema.createTable('farmOwner', tbl => {
+        tbl.increments();
         tbl.integer('farmID', 255)
             .unsigned()
             .notNullable()
@@ -12,7 +13,6 @@ exports.up = function(knex) {
             .references('id')
             .inTable('users')
             .onDelete('SET NULL')
-        tbl.primary(['farmID', 'ownerID'])
     })
 };
 

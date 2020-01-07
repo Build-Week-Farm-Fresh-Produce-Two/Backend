@@ -9,5 +9,5 @@ exports.seed = function(knex) {
     {orderID: 1, supplyID: 1, quantity: 1},
     {orderID: 1, supplyID: 1, quantity: 1},
     {orderID: 1, supplyID: 1, quantity: 1},
-  ]);
+  ], 'id');
 };

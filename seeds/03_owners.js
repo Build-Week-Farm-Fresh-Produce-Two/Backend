@@ -4,5 +4,5 @@ exports.seed = function(knex) {
     {farmID: 1, ownerID: 1},
     {farmID: 2, ownerID: 2},
     {farmID: 3, ownerID: 3},
-  ]);
+  ], 'id');
 };
