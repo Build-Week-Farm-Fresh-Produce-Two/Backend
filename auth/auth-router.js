@@ -55,17 +55,17 @@ router.post('/register', async (req, res) => {
         }else if(err === 2){
             res.status(400).json({message: 'Username must only contain characters A-Z, _, and 0-9. Username must start with a letter.'});
         }else if(err === 3){
-            res.status(422).json({message: `Username '${user.username}' is already in use.`});
+            res.status(409).json({message: `Username '${user.username}' is already in use.`});
         }else if(err === 4){
-            res.status(422).json({message: `There is already an account associated with that email`});
+            res.status(409).json({message: `There is already an account associated with that email`});
         }else if(err === 5){
-            res.status(422).json({message: `Farm ID is required`});
+            res.status(400).json({message: `Farm ID is required`});
         }else if(err === 6){
-            res.status(422).json({message: `Name is required`});
+            res.status(400).json({message: `Name is required`});
         }else if(err === 7){
-            res.status(422).json({message: `Zip code is required`});
+            res.status(400).json({message: `Zip code is required`});
         }else if(err === 8){
-            res.status(422).json({message: `Zip code must be five digits.`});
+            res.status(400).json({message: `Zip code must be five digits.`});
         }else{
             console.log(err);
             res.status(500).json({message: 'Server could not add user.', error: err});
