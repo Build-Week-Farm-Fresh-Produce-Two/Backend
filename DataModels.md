@@ -11,7 +11,7 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 | Variable      | Type           | Required |
 | ------------- |:--------------:| --------:|
 | id            | Auto-generated |     True |
-| farmID        | Integer        |     True |
+| farmID        | Integer (FKEY) |     True |
 | isFarmer      | Boolean        |     True |
 | email         | String         |     True |
 | username      | String         |     True |
@@ -28,13 +28,18 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 | Variable      | Type           | Required |
 | ------------- |:--------------:| --------:|
 | id            | Auto-generated |     True |
-| ownerUserID   | Integer        |     True |
 | name          | String         |     True |
 | addressStreet | String         |     True |
 | addressCity   | String         |     True |
 | addressState  | String         |     True |
 | zipCode       | Integer        |     True |
 >zipCode: 5 digits
+
+## farmOwner
+| Variable      | Type           | Required |
+| ------------- |:--------------:| --------:|
+| farmID        | Integer (FKEY) |     True |
+| ownerID       | Integer (FKEY) |     True |
 
 ## products
 | Variable      | Type           | Required |
@@ -49,8 +54,8 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 | Variable        | Type           | Required |
 | --------------- |:--------------:| --------:|
 | id              | Auto-generated |     True |
-| farmID          | Integer        |     True |
-| productID       | Integer        |     True |
+| farmID          | Integer (FKEY) |     True |
+| productID       | Integer (FKEY) |     True |
 | measurementType | String         |     True |
 | quantity        | Integer        |     True |
 | price           | Integer        |     True |
@@ -60,8 +65,8 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 | Variable          | Type           | Required |
 | ----------------- |:--------------:| --------:|
 | id                | Auto-generated |     True |
-| farmID            | Integer        |     True |
-| customerID        | Integer        |     True |
+| farmID            | Integer (FKEY) |     True |
+| customerID        | Integer (FKEY) |     True |
 | totalPrice        | Integer        |     True |
 | paymentStatus     | Boolean        |     True |
 | fulfillmentStatus | Boolean        |     True |
@@ -69,5 +74,5 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 ## orderedProducts
 | Variable      | Type           | Required |
 | ------------- |:--------------:| --------:|
-| orderID       | Integer        |     True |
-| productID     | Integer        |     True |
+| orderID       | Integer (FKEY) |     True |
+| supplyID      | Integer (FKEY) |     True |
