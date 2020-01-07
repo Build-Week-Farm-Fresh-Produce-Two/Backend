@@ -4,14 +4,14 @@ exports.up = function(knex) {
         tbl.increments();
         tbl.integer('farmID', 255)
             .unsigned()
-            .notNullable()
             .references('id')
             .inTable('farms')
+            .onDelete('SET NULL')
         tbl.integer('customerID', 255)
             .unsigned()
-            .notNullable()
             .references('id')
             .inTable('users')
+            .onDelete('SET NULL')
         tbl.integer('totalPrice', 255)
             .unsigned()
             .notNullable(),

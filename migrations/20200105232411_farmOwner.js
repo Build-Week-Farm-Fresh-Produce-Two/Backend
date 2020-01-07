@@ -6,11 +6,12 @@ exports.up = function(knex) {
             .notNullable()
             .references('id')
             .inTable('farms')
+            .onDelete('CASCADE')
         tbl.integer('ownerID', 255)
             .unsigned()
-            .notNullable()
             .references('id')
             .inTable('users')
+            .onDelete('SET NULL')
         tbl.primary(['farmID', 'ownerID'])
     })
 };

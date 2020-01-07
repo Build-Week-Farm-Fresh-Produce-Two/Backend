@@ -7,11 +7,13 @@ exports.up = function(knex) {
             .notNullable()
             .references('id')
             .inTable('farms')
+            .onDelete('CASCADE')
         tbl.integer('productID', 255)
             .unsigned()
             .notNullable()
             .references('id')
             .inTable('products')
+            .onDelete('CASCADE')
         tbl.string('measurementType', 255)
             .notNullable();
         tbl.integer('quantity', 255)

@@ -6,6 +6,7 @@ exports.up = function(knex) {
             .unsigned()
             .references('id')
             .inTable('farms')
+            .onDelete('SET NULL')
         tbl.boolean('isFarmer', 255)
             .notNullable();
         tbl.string('email', 255)

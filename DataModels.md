@@ -39,7 +39,8 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 | Variable      | Type           | Required |
 | ------------- |:--------------:| --------:|
 | farmID        | Integer (FKEY) |     True |
-| ownerID       | Integer (FKEY) |     True |
+| ownerID       | Integer (FKEY) |    False |
+>The ownerID allows null in case owner user is deleted, but should be considered required.
 
 ## products
 | Variable      | Type           | Required |
@@ -65,14 +66,17 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 | Variable          | Type           | Required |
 | ----------------- |:--------------:| --------:|
 | id                | Auto-generated |     True |
-| farmID            | Integer (FKEY) |     True |
-| customerID        | Integer (FKEY) |     True |
+| farmID            | Integer (FKEY) |    FALSE |
+| customerID        | Integer (FKEY) |    FALSE |
 | totalPrice        | Integer        |     True |
 | paymentStatus     | Boolean        |     True |
 | fulfillmentStatus | Boolean        |     True |
+>The two fkeys allow null in case either thing is deleted, but should be considered required.
 
 ## orderedProducts
 | Variable      | Type           | Required |
 | ------------- |:--------------:| --------:|
 | orderID       | Integer (FKEY) |     True |
-| supplyID      | Integer (FKEY) |     True |
+| supplyID      | Integer (FKEY) |    FALSE |
+| quantity      | Integer        |     True |
+>The supplyID allows null in case owner supply is deleted, but should be considered required.
