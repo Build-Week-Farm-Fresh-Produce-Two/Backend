@@ -22,11 +22,8 @@ exports.up = function(knex) {
             .unsigned()
             .notNullable();
         tbl.string('addressStreet', 255)
-            .notNullable();
         tbl.string('addressCity', 255)
-            .notNullable();
         tbl.string('addressState', 255)
-            .notNullable();
     })
 };
 

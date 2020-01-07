@@ -5,8 +5,8 @@ const userDb = require('../users/users-model');
 const {generateToken} = require('./token.js');
 
 router.post('/register', async (req, res) => {
-    const user = {username, password, email, cohort} = req.body;
-    console.log(user);
+    const user = {farmID, email, username, password, name, zipCode } = req.body;
+    console.log('registering ', username);
     for(let val in user){
         if(typeof user[val] === 'string'){
             user[val] = user[val].toLowerCase();
@@ -14,7 +14,7 @@ router.post('/register', async (req, res) => {
     };
    
     try{
-        if(!(username && password)){
+        if(!(username && password && email)){
             throw 1
         }else if(!(/^[a-z][a-z0-9_]*$/i.test(username))){
             throw 2
@@ -28,30 +28,45 @@ router.post('/register', async (req, res) => {
             throw 3
         }
 
-        // if(email){
-        //     const foundEmail = await db('users')
-        //     .where({email: user.email})
-        //     .first();
+        const foundEmail = await db('users')
+        .where({email: user.email})
+        .first();
 
-        //     if(foundEmail){
-        //         throw 4
-        //     }
-        // }
+        if(foundEmail){
+            throw 4
+        }
+        if(!farmID){
+            throw 5
+        }if(!name){
+            throw 6
+        }if(!zipCode){
+            throw 7
+        }if(zipCode.length !== 5){
+            throw 8
+        }
         
-        const [id] = await userDb.add({...user, password: bcrypt.hashSync(password, 8)});
+        const [id] = await userDb.add({...user, password: bcrypt.hashSync(password, 12)});
 
         const response = await db('users').select('id', 'username').where({id}).first();
 
         res.status(201).json({id :response.id, username: response.username});
     }catch(err){
         if(err === 1){
-            res.status(400).json({message: `Username and password is required.`});
+            res.status(400).json({message: `Email, username and password are required.`});
         }else if(err === 2){
             res.status(400).json({message: 'Username must only contain characters A-Z, _, and 0-9. Username must start with a letter.'});
         }else if(err === 3){
             res.status(422).json({message: `Username '${user.username}' is already in use.`});
-        // }else if(err === 4){
-        //     res.status(422).json({message: `There is already an account associated with that email`});
+        }else if(err === 4){
+            res.status(422).json({message: `There is already an account associated with that email`});
+        }else if(err === 5){
+            res.status(422).json({message: `Farm ID is required`});
+        }else if(err === 6){
+            res.status(422).json({message: `Name is required`});
+        }else if(err === 7){
+            res.status(422).json({message: `Zip code is required`});
+        }else if(err === 8){
+            res.status(422).json({message: `Zip code must be five digits.`});
         }else{
             console.log(err);
             res.status(500).json({message: 'Server could not add user'});
@@ -64,12 +79,12 @@ router.post('/login', async (req, res) => {
     const {username, password} = req.body;
     if(username && password){
         const user = await db('users as u').where({'u.username': username.toLowerCase()})
-            .leftJoin('profile_pictures as p', 'u.id', 'p.user_id')
-            .select('u.*', 'p.url')
+            .leftJoin('farms as f', 'u.id', 'f.id')
+            .select('u.*', 'f.name as farmName')
             .first();
         if(user && bcrypt.compareSync(password, user.password)){
             const token = await generateToken(user);
-            res.status(200).json({message: `Welcome ${username.toLowerCase()}`, token, user: {...user, password: undefined}});
+            res.status(200).json({message: `Welcome ${user.name}`, token, user: {...user, password: undefined}});
         }else{
             res.status(403).json({message: 'Invalid username or password'});
         }
