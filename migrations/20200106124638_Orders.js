@@ -3,13 +3,18 @@ exports.up = function(knex) {
     return knex.schema.createTable('orders', tbl => {
         tbl.increments();
         tbl.integer('farmID', 255)
-            .notNullable(),
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('farms')
         tbl.integer('customerID', 255)
-            .notNullable(),
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('users')
         tbl.integer('totalPrice', 255)
+            .unsigned()
             .notNullable(),
-        tbl.string('measurementType', 255)
-            .notNullable();
         tbl.boolean('paymentStatus', 255)
             .notNullable();
         tbl.boolean('fulfillmentStatus', 255)

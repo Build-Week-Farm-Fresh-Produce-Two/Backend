@@ -3,7 +3,10 @@ exports.up = function(knex) {
     return knex.schema.createTable('users', tbl => {
         tbl.increments();
         tbl.integer('farmID', 255)
-        tbl.isFarmer('extremeCold', 255)
+            .unsigned()
+            .references('id')
+            .inTable('farms')
+        tbl.boolean('isFarmer', 255)
             .notNullable();
         tbl.string('email', 255)
             .notNullable()
@@ -16,6 +19,7 @@ exports.up = function(knex) {
         tbl.string('name', 255)
             .notNullable();
         tbl.integer('zipCode', 255)
+            .unsigned()
             .notNullable();
         tbl.string('addressStreet', 255)
             .notNullable();

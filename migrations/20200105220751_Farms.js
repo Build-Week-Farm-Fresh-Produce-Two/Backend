@@ -2,8 +2,6 @@
 exports.up = function(knex) {
     return knex.schema.createTable('farms', tbl => {
         tbl.increments();
-        tbl.integer('ownerUserID', 255)
-            .notNullable();
         tbl.string('name', 255)
             .notNullable();
         tbl.string('addressStreet', 255)
@@ -13,6 +11,7 @@ exports.up = function(knex) {
         tbl.string('addressState', 255)
             .notNullable();
         tbl.integer('zipCode', 255)
+            .unsigned()
             .notNullable();
     })
 };
