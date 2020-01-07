@@ -19,7 +19,7 @@ exports.up = function(knex) {
         tbl.integer('quantity', 255)
             .unsigned()
             .notNullable();
-        tbl.integer('price', 255)
+        tbl.decimal('price', [null])
             .unsigned()
             .notNullable();
     })

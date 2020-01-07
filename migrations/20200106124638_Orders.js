@@ -12,7 +12,7 @@ exports.up = function(knex) {
             .references('id')
             .inTable('users')
             .onDelete('SET NULL')
-        tbl.integer('totalPrice', 255)
+            tbl.decimal('totalPrice', [null])
             .unsigned()
             .notNullable(),
         tbl.boolean('paymentStatus', 255)
