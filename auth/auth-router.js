@@ -34,8 +34,7 @@ router.post('/register', async (req, res) => {
 
         if(foundEmail){
             throw 4
-        }
-        if(!farmID){
+        }if(!farmID){
             throw 5
         }if(!name){
             throw 6
@@ -71,7 +70,6 @@ router.post('/register', async (req, res) => {
             console.log(err);
             res.status(500).json({message: 'Server could not add user.', error: err});
         }
-        
     }
 });
 
