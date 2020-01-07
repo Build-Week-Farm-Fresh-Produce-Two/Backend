@@ -69,7 +69,7 @@ router.post('/register', async (req, res) => {
             res.status(422).json({message: `Zip code must be five digits.`});
         }else{
             console.log(err);
-            res.status(500).json({message: 'Server could not add user'});
+            res.status(500).json({message: `Server could not add user. Error: ${err}`});
         }
         
     }
