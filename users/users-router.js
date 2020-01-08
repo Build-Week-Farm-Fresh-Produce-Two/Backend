@@ -12,14 +12,14 @@ router.get('/user', async (req, res) => {
             .select('u.*')
             .first();
         if(user){
-            res.status(200).json(user)
+            res.status(200).json({...user, password: null})
         }else{
-            console.log('get user 404 error', user);
+            console.log('Get user by token 404 error', user);
             res.status(404).json({message: `User with id ${req.user.id} not found.`});
         }
         
     }catch(err){
-        console.log(err);
+        console.log('Get user by token 500 error: ', err);
         res.status(500).json({message: 'Error getting user information.'});
     }
 });
@@ -28,7 +28,7 @@ router.get('/:id', async (req, res) => {
     try{
         const user = await userDb.findById(req.params.id);
         if(user){
-            res.status(200).json(user);
+            res.status(200).json({...user, password: null});
         }else{
             throw 404;
         }
