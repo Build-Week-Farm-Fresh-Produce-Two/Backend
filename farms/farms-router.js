@@ -36,11 +36,12 @@ router.post('/', async (req, res) => {
             throw 3
         }
         
-        const [id] = await dbMethods.add(table, farm);
+        let farm_id = [id] = await dbMethods.add(table, farm);
         
         if(id){
+            console.log('farm_id: ', farm_id)
             console.log('new farm id:', id);
-            const ownerAdded = dbMethods.add('farmOwner', {farmID: id, ownerID: req.user.id});
+            const ownerAdded = [id] = dbMethods.add('farmOwner', {farmID: id, ownerID: req.user.id});
             if (ownerAdded){
                 console.log('ownerAdded: ',ownerAdded);
                 const farm = await dbMethods.findById(table, id);
