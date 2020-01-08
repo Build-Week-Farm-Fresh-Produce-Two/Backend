@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
         }if(zipCode.length !== 5){
             console.log(zipCode, zipCode.length)
             throw 2
-        }if (!isNaN(zipCode)){
+        }if (isNaN(zipCode)){
             throw 3
         }
         

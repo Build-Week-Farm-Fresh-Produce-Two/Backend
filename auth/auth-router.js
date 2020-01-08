@@ -42,7 +42,7 @@ router.post('/register', async (req, res) => {
             throw 7
         }if(zipCode.length !== 5){
             throw 8
-        }if (!isNaN(zipCode)){
+        }if (isNaN(zipCode)){
             throw 9
         }
         
