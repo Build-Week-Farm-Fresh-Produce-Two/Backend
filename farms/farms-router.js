@@ -4,7 +4,7 @@ const farmDb = require('./farms-model.js')
 const userDb = require('../users/users-model.js');
 const dbMethods = require('../data/db-model.js')
 
-const db = require('../data/db-config');
+const db = require('../data/db-config.js');
 const table = 'farms';
 
 router.get('/all', async (req, res) => {
