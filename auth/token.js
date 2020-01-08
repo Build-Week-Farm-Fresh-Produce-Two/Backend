@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const db = require('../data/db-config');
 
 const secret = process.env.JWT_SECRET;
 
