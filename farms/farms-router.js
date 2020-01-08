@@ -110,6 +110,25 @@ router.get('/farm', async (req, res) => {
     }
 });
 
+router.get('/owners', async (req, res) => {
+    try{
+        const owner = await db('farmOwner')
+        .select('farmOwner.*')
+        if (owner){
+            res.status(200).json(owner);
+        }
+        else {
+            res.status(404).json({message: `Owners not found`});
+        }
+    }catch(err){
+        console.log('Get all owners error: ', err);
+        switch(err){
+            default: res.status(500).json({message: 'Error getting farm owner information'});
+                break;
+        }
+    }
+});
+
 // get farm by param id
 router.get('/:id', async (req, res) => {
     try{
