@@ -28,12 +28,13 @@ router.get('/all', async (req, res) => {
 // get farm by token
 router.get('/farm', async (req, res) => {
     try{
-        const farmID = await db('users as u')
+        const fID = await db('users as u')
             .where({'u.id': req.user.id})
             .select('u.farmID')
             .first();
-        if(farmID){
-            const farm = await dbMethods.findById(table, ...farmID);
+        if(fID){
+            console.log('fID, fID.farmID: ', fID, fID.farmID)
+            const farm = await dbMethods.findById(table, fID.farmID);
             if(farm){
                 res.status(200).json(farm);
             }
