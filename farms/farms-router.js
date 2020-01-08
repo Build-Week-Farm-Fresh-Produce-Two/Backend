@@ -7,6 +7,7 @@ const dbMethods = require('../data/db-model.js')
 const db = require('../data/db-config.js');
 const table = 'farms';
 
+// get all farms
 router.get('/all', async (req, res) => {
     try{
         const farms = await db('farms as f')
@@ -24,6 +25,34 @@ router.get('/all', async (req, res) => {
     }
 });
 
+// get farm by token
+router.get('/farm', async (req, res) => {
+    try{
+        const farmID = await db('users as u')
+            .where({'u.id': req.user.id})
+            .select('u.farmID')
+            .first();
+        if(farmID){
+            const farm = await dbMethods.findById(table, farmID);
+            if(farm){
+                res.status(200).json(farm);
+            }
+            else{
+                res.status(404).json({message: 'Farm with specified ID not found'});
+            }
+        }
+        else{
+            console.log('Get farm by token 404 error: userID/farmID', req.user.id, farmID);
+            res.status(404).json({message: `Farm with id of ${farmID} of user with id ${req.user.id} not found.`});
+        }
+        
+    }catch(err){
+        console.log(err);
+        res.status(500).json({message: 'Error getting farm by token.'});
+    }
+});
+
+// get farm by param id
 router.get('/:id', async (req, res) => {
     try{
         const farm = await dbMethods.findById(table, req.params.id);
@@ -43,23 +72,33 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// get by token
-router.get('/user', async (req, res) => {
+// get owner by farm ID
+router.get('/:id/owner', async (req, res) => {
     try{
-        const user = await db('users as u')
-            .where({'u.id': req.user.id})
+        const farm = await dbMethods.findById(table, req.params.id);
+        if(farm){
+            const owner = await db('farmOwner')
+            .where({'farmOwner.farmID': req.params.id})
+            .leftJoin('users as u', 'u.id', 'farmOwner.ownerID')
             .select('u.*')
             .first();
-        if(user){
-            res.status(200).json(user)
+            if (owner){
+                res.status(200).json();
+            }
+            else {
+                res.status(404).json({message: `Owner of ${farm.name} not found`});
+            }
         }else{
-            console.log('get user 404 error', user);
-            res.status(404).json({message: `User with id ${req.user.id} not found.`});
+            throw 404;
         }
-        
     }catch(err){
-        console.log(err);
-        res.status(500).json({message: 'Error getting user information.'});
+        console.log('Get farm by id error: ', err);
+        switch(err){
+            case 404: res.status(404).json({message: 'Farm with specified ID not found'});
+                break;
+            default: res.status(500).json({message: 'Error getting farm information'});
+                break;
+        }
     }
 });
 

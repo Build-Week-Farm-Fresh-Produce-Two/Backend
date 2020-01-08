@@ -18,9 +18,10 @@ https://bestfarm.herokuapp.com/api/
     | ----------------- |:------:|:--------:|:--------:|:------------------:| ----------------------------- |
     | /farms/all        | GET    |     True | Required | None               | Get all farms                 |
     | /farms/:id        | GET    |     True | Required | None               | Get farm by param ID          |
+    | /farms/:id/owner  | GET    |     True | Required | None               | Get owner by farm ID          |
+    | /farms/farm       | GET    |     True | Required | None               | Get farm by token             |
 
     create
-    read
     delete -> delete owner row
     update
     update owner
