@@ -1,4 +1,7 @@
 Endpoints:
+BaseURL:
+https://bestfarm.herokuapp.com/api/
+
 - ### users
     | Path              | Type   | Deployed | Auth     | Body               | Description                   |
     | ----------------- |:------:|:--------:|:--------:|:------------------:| ----------------------------- |
@@ -11,8 +14,10 @@ Endpoints:
     | /users/user/all   | GET    |     True | Required | None               | Debug only, return all users  |
     
 - ### farms
-    | Path              | Type   | Deployed | Auth     | Body | Description |
-    | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
+    | Path              | Type   | Deployed | Auth     | Body               | Description                   |
+    | ----------------- |:------:|:--------:|:--------:|:------------------:| ----------------------------- |
+    | /farms/all        | GET    |     True | Required | None               | Get all farms                 |
+
     create
     read
     delete -> delete owner row
@@ -30,3 +35,7 @@ Endpoints:
 - ### orders
     | Path              | Type   | Deployed | Auth     | Body | Description |
     | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
+
+    orders by farm- must be employee of farm
+    orders by user- must be user
+    orders by user by farm- all orders from customer, must be employee of farm
