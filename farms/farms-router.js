@@ -30,6 +30,7 @@ router.post('/', async (req, res) => {
             missing= 'zipCode';
             throw 1
         }if(zipCode.length !== 5){
+            console.log(zipCode, zipCode.length)
             throw 2
         }
         
