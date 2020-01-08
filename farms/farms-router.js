@@ -7,8 +7,60 @@ const dbMethods = require('../data/db-model.js')
 const db = require('../data/db-config.js');
 const table = 'farms';
 
+// new farm
+router.post('/', async (req, res) => {
+    const farm = { name, addressStreet, addressCity, addressState, zipCode } = req.body;
+    console.log('registering ', username);
+    let missing = ''
+
+    try{
+        if(!name){
+            missing= 'name';
+            throw 1
+        }if(!addressStreet){
+            missing= 'addressStreet';
+            throw 1
+        }if(!addressCity){
+            missing= 'addressCity';
+            throw 1
+        }if(!addressState){
+            missing= 'addressState';
+            throw 1
+        }if(!zipCode){
+            missing= 'zipCode';
+            throw 1
+        }if(zipCode.length !== 5){
+            throw 2
+        }
+        
+        const [id] = await dbMethods.add(table, farm);
+        
+        if(id){
+            console.log(id);
+            const ownerAdded = dbMethods.add('farmOwner', {farmID: id, ownerID: req.user.id});
+            if (ownerAdded){
+                const farm = await dbMethods.findById(table, id);
+                if(farm){
+                    res.status(200).json(farm);
+                }
+            }
+            else{
+                res.status(500).json({message: 'Error adding owner to new farm', error: err});
+            }
+        }
+    }catch(err){
+        if(err === 1){
+            res.status(400).json({message: `Missing field: ${missing}`});
+        }else if(err === 2){
+            res.status(400).json({message: `Zip code must be five digits.`});
+        }else{
+            console.log(err);
+            res.status(500).json({message: 'Server could not add farm.', error: err});
+        }
+    }
+});
 // get all farms
-router.get('/all', async (req, res) => {
+router.get('/', async (req, res) => {
     try{
         const farms = await db('farms as f')
             .select('f.*')
@@ -104,7 +156,8 @@ router.get('/:id/owner', async (req, res) => {
 });
 
 
-router.put('/user', async (req, res) => {
+
+router.put('/farm', async (req, res) => {
     const {username, email, cohort, name} = req.body;
     const newValues = {username, email, cohort, name};
     Object.keys(newValues).forEach(key => newValues[key] === undefined && delete newValues[key])

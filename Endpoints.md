@@ -3,23 +3,24 @@ BaseURL:
 https://bestfarm.herokuapp.com/api/
 
 - ### users
-    | Path              | Type   | Deployed | Auth     | Body               | Description                   |
-    | ----------------- |:------:|:--------:|:--------:|:------------------:| ----------------------------- |
-    | /auth/register    | POST   |     True | None     | User               | Create new user               |
-    | /auth/login       | POST   |     True | None     | username, password | Log in, get token             |
-    | /users/:id        | GET    |     True | Required | None               | Get user by param ID          |
-    | /users/user       | GET    |     True | Required | None               | Get user by token             |
-    | /users/user       | PUT    |     True | Required | User, password     | Update user by token          |
-    | /users/user       | DELETE |     True | Required | password           | Delete user by token          |
-    | /users/user/all   | GET    |     True | Required | None               | Debug only, return all users  |
+    | Path              | Type   | Deployed | Auth (JWT) | Body               | Description                   |
+    | ----------------- |:------:|:--------:|:----------:|:------------------:| ----------------------------- |
+    | /auth/register    | POST   |     True | None       | User               | Create new user               |
+    | /auth/login       | POST   |     True | None       | username, password | Log in, get token             |
+    | /users/:id        | GET    |     True | Required   | None               | Get user by param ID          |
+    | /users/user       | GET    |     True | Required   | None               | Get user by token             |
+    | /users/user       | PUT    |     True | Required   | User, password     | Update user by token          |
+    | /users/user       | DELETE |     True | Required   | password           | Delete user by token          |
+    | /users/user/all   | GET    |     True | Required   | None               | Debug only, return all users  |
     
 - ### farms
-    | Path              | Type   | Deployed | Auth     | Body               | Description                   |
-    | ----------------- |:------:|:--------:|:--------:|:------------------:| ----------------------------- |
-    | /farms/all        | GET    |     True | Required | None               | Get all farms                 |
-    | /farms/:id        | GET    |     True | Required | None               | Get farm by param ID          |
-    | /farms/:id/owner  | GET    |     True | Required | None               | Get owner by farm ID          |
-    | /farms/farm       | GET    |     True | Required | None               | Get farm by token             |
+    | Path              | Type   | Deployed | Auth (JWT) | Body               | Description                     |
+    | ----------------- |:------:|:--------:|:---------: |:------------------:| ------------------------------- |
+    | /farms/           | POST   |  testing | Required   | None               | Create new farm. Owner by token |
+    | /farms/           | GET    |     True | Required   | None               | Get all farms                   |
+    | /farms/:id        | GET    |     True | Required   | None               | Get farm by param ID            |
+    | /farms/:id/owner  | GET    |     True | Required   | None               | Get owner by farm ID            |
+    | /farms/farm       | GET    |     True | Required   | None               | Get farm by token               |
 
     create
     delete -> delete owner row
@@ -31,6 +32,7 @@ https://bestfarm.herokuapp.com/api/
 - ### supply
     | Path              | Type   | Deployed | Auth     | Body | Description |
     | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
+
     create
     get by farm
     get by product name/id
