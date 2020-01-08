@@ -33,7 +33,7 @@ router.get('/farm', async (req, res) => {
             .select('u.farmID')
             .first();
         if(farmID){
-            const farm = await dbMethods.findById(table, farmID);
+            const farm = await dbMethods.findById(table, ...farmID);
             if(farm){
                 res.status(200).json(farm);
             }
@@ -83,7 +83,7 @@ router.get('/:id/owner', async (req, res) => {
             .select('u.*')
             .first();
             if (owner){
-                res.status(200).json();
+                res.status(200).json(owner);
             }
             else {
                 res.status(404).json({message: `Owner of ${farm.name} not found`});
