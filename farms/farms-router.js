@@ -10,7 +10,7 @@ const table = 'farms';
 // new farm
 router.post('/', async (req, res) => {
     const farm = { name, addressStreet, addressCity, addressState, zipCode } = req.body;
-    console.log('registering ', username);
+    console.log('Creating new farm:  ', farm);
     let missing = ''
 
     try{
