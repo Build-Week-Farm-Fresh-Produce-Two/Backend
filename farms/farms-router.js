@@ -1,10 +1,11 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
-const farmDb = require('./farm-model.js')
+const farmDb = require('./farms-model.js')
 const userDb = require('../users/users-model.js');
 const dbMethods = require('../data/db-model.js')
 
 const db = require('../data/db-config');
+const table = 'farms';
 
 router.get('/all', async (req, res) => {
     try{
@@ -25,7 +26,7 @@ router.get('/all', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try{
-        const user = await farmDb.findById(req.params.id);
+        const farm = await dbMethods.findById(table, req.params.id);
         if(farm){
             res.status(200).json(farm);
         }else{

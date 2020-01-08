@@ -17,6 +17,7 @@ https://bestfarm.herokuapp.com/api/
     | Path              | Type   | Deployed | Auth     | Body               | Description                   |
     | ----------------- |:------:|:--------:|:--------:|:------------------:| ----------------------------- |
     | /farms/all        | GET    |     True | Required | None               | Get all farms                 |
+    | /farms/:id        | GET    |     True | Required | None               | Get farm by param ID          |
 
     create
     read
