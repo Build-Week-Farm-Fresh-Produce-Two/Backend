@@ -22,6 +22,7 @@ function findByMultiple(table, value1, value2){
 }
 
 function add(table, row){
+    console.log('DB Add: ', table, row)
     return db(table)
     .insert(row, 'id');
 }
