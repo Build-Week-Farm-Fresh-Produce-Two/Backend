@@ -1,6 +1,6 @@
 Endpoints:
 - ### users
-    | Path              | Type    | Deployed | Auth     | Body               | Description                   |
+    | Path              | Type   | Deployed | Auth     | Body               | Description                   |
     | ----------------- |:------:|:--------:|:--------:|:------------------:| ----------------------------- |
     | /auth/register    | POST   |     True | None     | User               | Create new user               |
     | /auth/login       | POST   |     True | None     | username, password | Log in, get token             |
@@ -13,9 +13,20 @@ Endpoints:
 - ### farms
     | Path              | Type   | Deployed | Auth     | Body | Description |
     | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
+    create
+    read
+    delete -> delete owner row
+    update
+    update owner
 - ### products
     | Path              | Type   | Deployed | Auth     | Body | Description |
     | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
 - ### supply
+    | Path              | Type   | Deployed | Auth     | Body | Description |
+    | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
+    create
+    get by farm
+    get by product name/id
+- ### orders
     | Path              | Type   | Deployed | Auth     | Body | Description |
     | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
