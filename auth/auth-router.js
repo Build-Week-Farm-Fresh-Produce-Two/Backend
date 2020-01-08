@@ -5,7 +5,7 @@ const userDb = require('../users/users-model');
 const {generateToken} = require('./token.js');
 
 router.post('/register', async (req, res) => {
-    const user = {farmID, email, username, password, name, zipCode } = req.body;
+    const user = {isFarmer, farmID, email, username, password, name, zipCode } = req.body;
     console.log('registering ', username);
     for(let val in user){
         if(typeof user[val] === 'string'){
@@ -45,6 +45,9 @@ router.post('/register', async (req, res) => {
         }if (isNaN(zipCode)){
             throw 9
         }
+        if (isFarmer === undefined){
+            throw 10
+        }
         
         const [id] = await userDb.add({...user, password: bcrypt.hashSync(password, 12)});
 
@@ -70,6 +73,8 @@ router.post('/register', async (req, res) => {
             res.status(400).json({message: `Zip code must be five digits.`});
         }else if(err === 9){
             res.status(400).json({message: `Zip code must be a number.`});
+        }else if(err === 10){
+            res.status(400).json({message: `bool isFarmer is required`});
         }else{
             console.log(err);
             res.status(500).json({message: 'Server could not add user.', error: err});
