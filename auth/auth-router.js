@@ -42,6 +42,8 @@ router.post('/register', async (req, res) => {
             throw 7
         }if(zipCode.length !== 5){
             throw 8
+        }if (!isNaN(zipCode)){
+            throw 9
         }
         
         const [id] = await userDb.add({...user, password: bcrypt.hashSync(password, 12)});
@@ -66,6 +68,8 @@ router.post('/register', async (req, res) => {
             res.status(400).json({message: `Zip code is required`});
         }else if(err === 8){
             res.status(400).json({message: `Zip code must be five digits.`});
+        }else if(err === 9){
+            res.status(400).json({message: `Zip code must be a number.`});
         }else{
             console.log(err);
             res.status(500).json({message: 'Server could not add user.', error: err});

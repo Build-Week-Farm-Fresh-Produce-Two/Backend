@@ -32,6 +32,8 @@ router.post('/', async (req, res) => {
         }if(zipCode.length !== 5){
             console.log(zipCode, zipCode.length)
             throw 2
+        }if (!isNaN(zipCode)){
+            throw 3
         }
         
         const [id] = await dbMethods.add(table, farm);
@@ -54,6 +56,8 @@ router.post('/', async (req, res) => {
             res.status(400).json({message: `Missing field: ${missing}`});
         }else if(err === 2){
             res.status(400).json({message: `Zip code must be five digits.`});
+        }else if(err === 3){
+            res.status(400).json({message: `Zip code must be a number.`});
         }else{
             console.log(err);
             res.status(500).json({message: 'Server could not add farm.', error: err});
