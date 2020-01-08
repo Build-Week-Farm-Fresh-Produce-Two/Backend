@@ -1,8 +1,46 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
-const userDb = require('./users-model');
+const farmDb = require('./farm-model.js')
+const userDb = require('../users/users-model.js');
+const dbMethods = require('../data/db-model.js')
 
 const db = require('../data/db-config');
+
+router.get('/all', async (req, res) => {
+    try{
+        const farms = await db('farms as f')
+            .select('f.*')
+        if(farms){
+            res.status(200).json(farms)
+        }else{
+            console.log('Get all farms 404 error', farms);
+            res.status(404).json({message: `Error loading farms`});
+        }
+        
+    }catch(err){
+        console.log('Get all farms 500 error', err);
+        res.status(500).json({message: 'Error getting user information.'});
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    try{
+        const user = await farmDb.findById(req.params.id);
+        if(farm){
+            res.status(200).json(farm);
+        }else{
+            throw 404;
+        }
+    }catch(err){
+        console.log('Get farm by id error: ', err);
+        switch(err){
+            case 404: res.status(404).json({message: 'Farm with specified ID not found'});
+                break;
+            default: res.status(500).json({message: 'Error getting farm information'});
+                break;
+        }
+    }
+});
 
 // get by token
 router.get('/user', async (req, res) => {
@@ -24,24 +62,6 @@ router.get('/user', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
-    try{
-        const user = await userDb.findById(req.params.id);
-        if(user){
-            res.status(200).json(user);
-        }else{
-            throw 404;
-        }
-    }catch(err){
-        console.log(err);
-        switch(err){
-            case 404: res.status(404).json({message: 'User with specified ID not found'});
-                break;
-            default: res.status(500).json({message: 'Error getting user information'});
-                break;
-        }
-    }
-});
 
 router.put('/user', async (req, res) => {
     const {username, email, cohort, name} = req.body;
@@ -158,22 +178,5 @@ router.delete('/user', async (req, res) => {
 
 
 
-// for debugging, remove when finished
-router.get('/all', async (req, res) => {
-    try{
-        const farms = await db('farms as f')
-            .select('f.*')
-        if(farms){
-            res.status(200).json(farms)
-        }else{
-            console.log('Get all farms 404 error', farms);
-            res.status(404).json({message: `Error loading farms`});
-        }
-        
-    }catch(err){
-        console.log('Get all farms 500 error', err);
-        res.status(500).json({message: 'Error getting user information.'});
-    }
-});
 
 module.exports = router;
