@@ -169,7 +169,7 @@ router.get('/product/:id', async (req, res) => {
             .leftJoin('farms as f', 'f.id', 's.farmID')
             .leftJoin('products as p', 'p.id', 's.productID')
             .select('f.name as farmName', 'p.* as product', 's.*', );
-            if(supplies){
+            if(supplies.length > 0){
                 res.status(200).json(supplies)
             }
             else{
