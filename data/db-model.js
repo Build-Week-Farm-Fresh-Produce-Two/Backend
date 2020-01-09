@@ -23,7 +23,7 @@ function findByMultiple(table, value1, value2){
 }
 
 function searchBy(table, columnName, value){
-    return db(table).where(columnName, 'like', `%${value}%`)
+    return db(table).whereRaw(`LOWER(${columnName}) LIKE %${value.toLowerCase()}%`);
 }
 
 function add(table, row){
