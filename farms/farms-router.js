@@ -181,8 +181,8 @@ router.get('/:id/owner', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-    const newValues = { name, addressStreet, addressCity, addressState, zipCode } = req.body;
-    const {password, newOwnerID} = req.body;
+    const { name, addressStreet, addressCity, addressState, zipCode, password, newOwnerID } = req.body;
+    const newValues = name, addressStreet, addressCity, addressState, zipCode
     
     try{
         const farm = await dbMethods.findById(table, req.params.id);
@@ -193,6 +193,14 @@ router.put('/:id', async (req, res) => {
             const newOwner = await dbMethods.findById('users', newOwnerID);
             if (!newOwner){
                 throw 5
+            }
+        }
+        if (zipCode){
+            if(zipCode.length !== 5){
+                console.log(zipCode, zipCode.length)
+                throw 6
+            }if (isNaN(zipCode)){
+                throw 7
             }
         }
         if (farm){
@@ -237,6 +245,10 @@ router.put('/:id', async (req, res) => {
             res.status(400).json({message: 'New owner ID must be a number.'});
         }else if(err === 5){
             res.status(404).json({message: `No user found for newOwnerID: ${newOwnerID}`});
+        }else if(err === 6){
+            res.status(400).json({message: `Zip code must be five digits.`});
+        }else if(err === 3){
+            res.status(407).json({message: `Zip code must be a number.`});
         }else if(err === 404){
             res.status(404).json({message: `Farm with ID ${req.params.id} not found.`});
         }
