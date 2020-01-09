@@ -160,6 +160,10 @@ router.get('/product/:id', async (req, res) => {
         if (isNaN(req.params.id)){
             throw 1
         }
+        const product = await dbMethods.findById(table, req.params.id);
+        if(!product){
+            throw 2
+        }
         console.log('get supplies by productID: ', req.params.id)
         const supplies = await db('supply as s')
         .where({productID: req.params.id})
@@ -176,6 +180,9 @@ router.get('/product/:id', async (req, res) => {
         console.log(err);
         if(err === 1){
             res.status(400).json({message: 'ID must be a number.'});
+        }
+        if(err === 2){
+            res.status(404).json({message: `Product with id: ${req.params.id} not found`});
         }
         res.status(500).json({message: 'Error getting supplies by product ID.'});
     }
