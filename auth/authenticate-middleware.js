@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
                 res.status(401).json({message: 'Invalid token'});
             }else{
                 // console.log(decodedToken);
-                req.user = {id: decodedToken.subject};
+                req.user = {id: decodedToken.subject, farmID: decodedToken.farmID};
                 next();
             }
         });
