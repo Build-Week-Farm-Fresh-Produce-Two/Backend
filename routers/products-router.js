@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const bcrypt = require('bcryptjs');
 const dbMethods = require('../data/db-model.js')
 const db = require('../data/db-config.js');
 
@@ -128,12 +127,5 @@ router.get('/desc/:desc', async (req, res) => {
         }
     }
 });
-
-
-
-// get products by farm? or just do supply, yeah to supply and just show 0 supply if out, they can delete supplies
-
-
-
 
 module.exports = router;
