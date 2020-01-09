@@ -40,14 +40,14 @@ function update(table, id, row){
     .update({...row});
 }
 
-async function remove(table, id){
+async function remove(table, value){
     await db.transaction(async trx => {
         try{
              await trx(table)
             .where({id});
 
             const rowDeleted = await trx(table)
-            .where({id})
+            .where(value)
             .del();
             
             if(!rowDeleted){

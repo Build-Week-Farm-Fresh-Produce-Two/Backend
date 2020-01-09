@@ -16,17 +16,18 @@ https://bestfarm.herokuapp.com/api/
 - ### farms
     | Path              | Type   | Deployed | Auth (JWT) | Body               | Description                     |
     | ----------------- |:------:|:--------:|:---------: |:------------------:| -------------------------------------------------- |
-    | /farms/           | POST   |  testing | Required   | None               | Create new farm. Owner by token |
+    | /farms/           | POST   |     True | Required   | None               | Create new farm. Owner by token |
     | /farms/           | GET    |     True | Required   | None               | Get all farms                   |
     | /farms/owners     | GET    |     True | Required   | None               | Get all owners, for debugging and will be disabled |
     | /farms/:id        | GET    |     True | Required   | None               | Get farm by param ID            |
     | /farms/:id/owner  | GET    |     True | Required   | None               | Get owner by farm ID            |
     | /farms/farm       | GET    |     True | Required   | None               | Get farm by token               |
+    | /farms/:id        | DELETE |     testing | Required   | password          | Delete farm by id- user must be owner of farm. |
 
-    create
     delete -> delete owner row
     update
     update owner
+
 - ### products
     | Path              | Type   | Deployed | Auth     | Body | Description |
     | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
