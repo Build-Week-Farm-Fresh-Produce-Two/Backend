@@ -276,16 +276,12 @@ try{
         console.log('farmCheck', farmCheck);
         console.log('user farmID', req.user.farmID);
         if (farmCheck.id !== req.user.farmID){
-            throw 7
+            throw 6
         }
-    }
-    const productCheck = await dbMethods.findById('products', productID);
-    if (!productCheck){
-        throw 5
     }
     const supplyCheck = await dbMethods.findById(table, req.params.id);
     if (!supplyCheck){
-        throw 6
+        throw 5
     }
     // #endregion
     const newSupply = await dbMethods.update(table, req.params.id, {measurementType, quantity, price});
@@ -312,10 +308,8 @@ try{
     }else if(err === 4){
         res.status(404).json({message: `Farm with ID ${farmID} not found`});
     }else if(err === 5){
-        res.status(404).json({message: `Product with ID ${productID} not found`});
-    }else if(err === 6){
         res.status(409).json({message: `Supply with ID ${req.params.id} not found`});
-    }else if(err === 7){
+    }else if(err === 6){
         res.status(409).json({message: `User must belong to farm to modify it's supply`});
     }else{
         console.log(err);
