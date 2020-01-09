@@ -5,13 +5,12 @@ const db = require('../data/db-config.js');
 
 const table = 'supply';
 
-
-// new farm
+// new supply
 router.post('/', async (req, res) => {
     const { farmID, productID, measurementType, quantity, price } = req.body;
     console.log('Creating new supply:  ', req.body);
     let badValue = ''
-
+    console.log('user FARMID', req.user.farmID);
     try{
         // #region error throws
         if(!farmID){
@@ -48,6 +47,10 @@ router.post('/', async (req, res) => {
         const farmCheck = await dbMethods.findById('farms', farmID);
         if (!farmCheck){
             throw 4
+        }
+        else if (farmCheck)
+        {
+            console.log('farmCheck', farmCheck);
         }
         const productCheck = await dbMethods.findById('products', productID);
         if (!productCheck){
