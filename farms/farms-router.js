@@ -186,12 +186,14 @@ router.put('/:id', async (req, res) => {
     
     try{
         const farm = await dbMethods.findById(table, req.params.id);
-        if(isNaN(newOwnerID)){
-            throw 4
-        }
-        const newOwner = await dbMethods.findById('users', req.params.id);
-        if (!newOwner){
-            throw 5
+        if (newOwnerID){
+            if(isNaN(newOwnerID)){
+                throw 4
+            }
+            const newOwner = await dbMethods.findById('users', newOwnerID);
+            if (!newOwner){
+                throw 5
+            }
         }
         if (farm){
             console.log(`Updating farm id: ${farm.id} name: ${farm.name}: new values: `, newValues);
