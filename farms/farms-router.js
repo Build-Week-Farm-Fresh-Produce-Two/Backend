@@ -182,7 +182,7 @@ router.get('/:id/owner', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     const { name, addressStreet, addressCity, addressState, zipCode, password, newOwnerID } = req.body;
-    const newValues = name, addressStreet, addressCity, addressState, zipCode
+    const newValues = {name, addressStreet, addressCity, addressState, zipCode};
     
     try{
         const farm = await dbMethods.findById(table, req.params.id);

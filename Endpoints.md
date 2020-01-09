@@ -22,9 +22,10 @@ https://bestfarm.herokuapp.com/api/
     | /farms/farm       | GET    |     True | Required   | None     | Get farm by token                                 |
     | /farms/:id        | GET    |     True | Required   | None     | Get farm by param ID                              |
     | /farms/:id/owner  | GET    |     True | Required   | None     | Get owner by farm ID                              |
-    | /farms/:id        | DELETE |     True | Required   | password | Update farm by id- user must be owner of farm.    |
+    | /farms/:id        | PUT    |     True | Required   | password | Update farm by id- user must be owner of farm.    |
     | /farms/:id        | DELETE |     True | Required   | password | Delete farm by id- user must be owner of farm.    |
     >Deleting farm also deletes the farmOwner table row
+
     >Owner can be update with /farms/:id if newOwnerID is included.
     
     update
