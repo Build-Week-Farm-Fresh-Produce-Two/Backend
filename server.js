@@ -7,8 +7,8 @@ const helmet = require('helmet');
 
 const authenticate = require('./auth/authenticate-middleware.js');
 const authRouter = require('./auth/auth-router.js');
-const userRouter = require('./users/users-router.js');
-const farmsRouter = require('./farms/farms-router.js');
+const userRouter = require('./routers/users-router.js');
+const farmsRouter = require('./routers/farms-router.js');
 
 const server = express();
 
