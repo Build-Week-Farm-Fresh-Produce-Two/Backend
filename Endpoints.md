@@ -32,12 +32,13 @@ https://bestfarm.herokuapp.com/api/
     update owner
 
 - ### products
-    | Path                 | Type   | Deployed | Auth (JWT) | Body     | Description                 |
-    | -------------------- |:------:|:--------:|:---------: |:--------:| --------------------------- |
-    | /products/           | POST   |     True | Required   | Product  | Create new product          |
-    | /products/           | GET    |     True | Required   | None     | Get all products            |
-    | /products/id/:id     | GET    |     True | Required   | None     | Get product by param ID     |
-    | /products/name/:name | GET    |     True | Required   | None     | Get products by param name  |
+    | Path                 | Type   | Deployed | Auth (JWT) | Body     | Description                        |
+    | -------------------- |:------:|:--------:|:---------: |:--------:| ---------------------------------- |
+    | /products/           | POST   |     True | Required   | Product  | Create new product                 |
+    | /products/           | GET    |     True | Required   | None     | Get all products                   |
+    | /products/id/:id     | GET    |     True | Required   | None     | Get product by param ID            |
+    | /products/name/:name | GET    |     True | Required   | None     | Search/get products by param name  |
+    | /products/desc/:desc | GET    |     True | Required   | None     | Search/get products by param desc  |
 
     c
     r

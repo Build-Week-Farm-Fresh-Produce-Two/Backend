@@ -82,7 +82,7 @@ router.get('/id/:id', async (req, res) => {
     }
 });
 
-// get product by name
+// search products by name
 router.get('/name/:name', async (req, res) => {
     try{
         console.log('Get products by name: ', req.params.name);
@@ -93,11 +93,32 @@ router.get('/name/:name', async (req, res) => {
             throw 404;
         }
     }catch(err){
-        console.log('Get farm by id error: ', err);
+        console.log('Get products by name error: ', err);
         switch(err){
             case 404: res.status(404).json({message: `Products including "${req.params.name}" not found`});
                 break;
             default: res.status(500).json({message: 'Error getting products by name'});
+                break;
+        }
+    }
+});
+
+// search products by description
+router.get('/desc/:desc', async (req, res) => {
+    try{
+        console.log('Get products by desc: ', req.params.desc);
+        const products = await dbMethods.searchBy(table, 'description', req.params.desc);
+        if(products){
+            res.status(200).json(product);
+        }else{
+            throw 404;
+        }
+    }catch(err){
+        console.log('Get products by description error: ', err);
+        switch(err){
+            case 404: res.status(404).json({message: `Products including "${req.params.desc}" not found`});
+                break;
+            default: res.status(500).json({message: 'Error getting products by description'});
                 break;
         }
     }
