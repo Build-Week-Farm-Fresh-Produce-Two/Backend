@@ -230,82 +230,110 @@ router.get('/product/:id', async (req, res) => {
 
 
 
-// update farm by id, can also update owner
-router.put('/:id', async (req, res) => {
-    const { name, addressStreet, addressCity, addressState, zipCode, password, newOwnerID } = req.body;
-    const newValues = {name, addressStreet, addressCity, addressState, zipCode};
-    
-    try{
-        const farm = await dbMethods.findById(table, req.params.id);
-        if (newOwnerID){
-            if(isNaN(newOwnerID)){
-                throw 4
-            }
-            const newOwner = await dbMethods.findById('users', newOwnerID);
-            if (!newOwner){
-                throw 5
-            }
-        }
-        if (zipCode){
-            if(zipCode.length !== 5){
-                console.log(zipCode, zipCode.length)
-                throw 6
-            }if (isNaN(zipCode)){
-                throw 7
-            }
-        }
-        if (farm){
-            console.log(`Updating farm id: ${farm.id} name: ${farm.name}: new values: `, newValues);
-            if(password){
-                const user = await db('users')
-                .where({id: req.user.id})
-                .first();
-                if(user && bcrypt.compareSync(password, user.password)){
-                    const ownerRow = await db('farmOwner')
-                    .where({farmID: req.params.id})
-                    .select('farmOwner.*')
-                    .first();
-                    if (ownerRow && ownerRow.ownerID === req.user.id){
-                        if (newOwnerID){
-                            await dbMethods.update('farmOwner', ownerRow.id, {ownerID: newOwnerID})
-                        }
-                            await dbMethods.update(table, ownerRow.farmID, newValues);
-                            const newFarm = await dbMethods.findById(table, req.params.id);
-                        res.status(200).json({message: `Farm ${farm.name} successfully updated`, farm: newFarm});
-                    }else{
-                        console.log('ownerID, req.user.id: ', ownerRow.ownerID, req.user.id);
-                        throw 3
-                    }
-                }else{
-                    throw 1
-                }
-            }else{
-                throw 2
-            }
-        }else{
-            throw 404
-        }
-    }catch(err){
-        if(err === 1){
-            res.status(403).json({message: 'Invalid credentials.'});
-        }else if(err === 2){
-            res.status(400).json({message: 'Please provide password.'});
-        }else if(err === 3){
-            res.status(403).json({message: 'Only the owner of a farm may update it.'});
-        }else if(err === 4){
-            res.status(400).json({message: 'New owner ID must be a number.'});
-        }else if(err === 5){
-            res.status(404).json({message: `No user found for newOwnerID: ${newOwnerID}`});
-        }else if(err === 6){
-            res.status(400).json({message: `Zip code must be five digits.`});
-        }else if(err === 3){
-            res.status(407).json({message: `Zip code must be a number.`});
-        }else if(err === 404){
-            res.status(404).json({message: `Farm with ID ${req.params.id} not found.`});
-        }
-        console.log('Update farm by id 500 catch error: ', err);
-        res.status(500).json({message: 'Error updating farm.', error: err});
+// update supply by id
+router.put('/:id', async (req, res) => {const { farmID, productID, measurementType, quantity, price } = req.body;
+console.log('Creating new supply:  ', req.body);
+let badValue = ''
+try{
+    // #region error throws
+    if(!farmID){
+        badValue= 'farmID';
+        throw 1
+    }if(!productID){
+        badValue= 'productID';
+        throw 1
+    }if(!measurementType){
+        badValue= 'measurementType';
+        throw 1
+    }if(!quantity){
+        badValue= 'quantity';
+        throw 1
+    }if(!price){
+        badValue= 'price';
+        throw 1
+    }if (Math.sign(farmID) !== 1){
+        badValue= 'farmID';
+        throw 2
+    }if (Math.sign(productID) !== 1){
+        badValue= 'productID';
+        throw 2
+    }if (Math.sign(quantity) !== 1){
+        badValue= 'quantity';
+        throw 2
+    }if (Math.sign(price) !== 1){
+        badValue= 'price';
+        throw 2
+    }if (!isNaN(measurementType)){
+        badValue= 'measurementType';
+        throw 3
     }
+    const farmCheck = await dbMethods.findById('farms', farmID);
+    if (!farmCheck){
+        throw 4
+    }
+    else if (farmCheck)
+    {
+        console.log('farmCheck', farmCheck);
+        console.log('user farmID', req.user.farmID);
+        if (farmCheck.id !== req.user.farmID){
+            throw 7
+        }
+    }
+    const productCheck = await dbMethods.findById('products', productID);
+    if (!productCheck){
+        throw 5
+    }
+    const supplyCheck = await dbMethods.findById(table, req.params.id);
+    if (!supplyCheck){
+        throw 6
+    }
+    // #endregion
+    const newSupply = await dbMethods.update(table, req.params.id, {measurementType, quantity, price});
+    
+    if(newSupply){
+        console.log('New Supply id: ', newSupply);
+        const supplies = await db('supply as s')
+        .where({'s.id': newSupply})
+        .leftJoin('farms as f', 'f.id', 's.farmID')
+        .leftJoin('products as p', 'p.id', 's.productID')
+        .select('f.name as farmName', 'p.* as product', 's.*')
+        .first();
+        if(supplies){
+            res.status(200).json(supplies)
+        }
+    }
+}catch(err){
+    if(err === 1){
+        res.status(400).json({message: `Missing field: ${badValue}`});
+    }else if(err === 2){
+        res.status(400).json({message: `${badValue} must be a positive number`});
+    }else if(err === 3){
+        res.status(400).json({message: `${badValue} must be a string`});
+    }else if(err === 4){
+        res.status(404).json({message: `Farm with ID ${farmID} not found`});
+    }else if(err === 5){
+        res.status(404).json({message: `Product with ID ${productID} not found`});
+    }else if(err === 6){
+        res.status(409).json({message: `Supply with ID ${req.params.id} not found`});
+    }else if(err === 7){
+        res.status(409).json({message: `User must belong to farm to modify it's supply`});
+    }else{
+        console.log(err);
+        res.status(500).json({message: 'Server could not add supply.', error: err});
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 });
 
 // delete supply by id
