@@ -77,7 +77,7 @@ router.get('/', async (req, res) => {
         
     }catch(err){
         console.log('Get all farms 500 error', err);
-        res.status(500).json({message: 'Error getting user information.'});
+        res.status(500).json({message: 'Error getting farms information.'});
     }
 });
 
