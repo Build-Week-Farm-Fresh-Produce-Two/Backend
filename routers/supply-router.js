@@ -155,7 +155,7 @@ router.get('/farm/:id', async (req, res) => {
 });
 
 // get farms and supply by product ID
-router.get('/supply/product/:id', async (req, res) => {
+router.get('/product/:id', async (req, res) => {
     try{
         if (isNaN(req.params.id)){
             throw 1
@@ -165,7 +165,7 @@ router.get('/supply/product/:id', async (req, res) => {
         .where({productID: req.params.id})
         .leftJoin('farms as f', 'f.id', 's.farmID')
         .leftJoin('products as p', 'p.id', 's.productID')
-        .select('f.name as farmName', 's.*', 'p.* as product');
+        .select('f.name as farmName', 'p.* as product', 's.*', );
         if(supplies){
             res.status(200).json(supplies)
         }
