@@ -10,7 +10,6 @@ router.post('/', async (req, res) => {
     const { farmID, productID, measurementType, quantity, price } = req.body;
     console.log('Creating new supply:  ', req.body);
     let badValue = ''
-    console.log('user FARMID', req.user.farmID);
     try{
         // #region error throws
         if(!farmID){
@@ -51,6 +50,10 @@ router.post('/', async (req, res) => {
         else if (farmCheck)
         {
             console.log('farmCheck', farmCheck);
+            console.log('user farmID', req.user.farmID);
+            if (farmCheck.id !== req.user.farmID){
+                throw 7
+            }
         }
         const productCheck = await dbMethods.findById('products', productID);
         if (!productCheck){
@@ -90,6 +93,8 @@ router.post('/', async (req, res) => {
             res.status(404).json({message: `Product with ID ${productID} not found`});
         }else if(err === 6){
             res.status(409).json({message: `Farm id ${farmID} already has a supply for Product with ID ${productID}`});
+        }else if(err === 7){
+            res.status(409).json({message: `User must belong to farm to modify it's supply`});
         }else{
             console.log(err);
             res.status(500).json({message: 'Server could not add supply.', error: err});
