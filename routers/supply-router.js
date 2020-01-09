@@ -60,7 +60,7 @@ router.post('/', async (req, res) => {
         }
         // #endregion
         
-        const newSupply = await dbMethods.add(table, req.body);
+        const [newSupply] = await dbMethods.add(table, req.body);
         
         if(newSupply){
             console.log('New Supply id: ', newSupply);
