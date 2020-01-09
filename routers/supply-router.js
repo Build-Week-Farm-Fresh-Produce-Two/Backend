@@ -135,7 +135,7 @@ router.get('/farm', async (req, res) => {
                 const supplies = await db('supply as s')
                 .where({farmID: farm.id})
                 .leftJoin('products as p', 'p.id', 's.productID')
-                .select('s.*', 'p.* as product')
+                .select('p.* as product', 's.*')
                 if(supplies){
                     res.status(200).json({farm: farm.name, farmID: farm.id, supplies})
                 }else{
@@ -171,7 +171,7 @@ router.get('/farm/:id', async (req, res) => {
             const supplies = await db('supply as s')
             .where({farmID: farm.id})
             .leftJoin('products as p', 'p.id', 's.productID')
-            .select('s.*', 'p.* as product')
+            .select('p.* as product', 's.*')
             if(supplies){
                 res.status(200).json({farm: farm.name, farmID: farm.id, supplies})
             }else{
