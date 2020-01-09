@@ -55,8 +55,6 @@ https://bestfarm.herokuapp.com/api/
     | /supply/product/:id  | GET    |     True | Required   | None     | Get farms and supply by product ID |
 
     create
-    get by farm
-    get farms by productID(availableAt/soldBy)
     update called on order, check quantities
     delete- remove product supply from farm
 - ### orders

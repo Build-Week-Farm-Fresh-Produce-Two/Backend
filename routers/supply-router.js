@@ -8,59 +8,80 @@ const table = 'supply';
 
 // new farm
 router.post('/', async (req, res) => {
-    const farm = { name, addressStreet, addressCity, addressState, zipCode } = req.body;
-    console.log('Creating new farm:  ', farm);
-    let missing = ''
+    const { farmID, productID, measurementType, quantity, price } = req.body;
+    console.log('Creating new supply:  ', req.body);
+    let badValue = ''
 
     try{
-        if(!name){
-            missing= 'name';
+        // #region error throws
+        if(!farmID){
+            badValue= 'farmID';
             throw 1
-        }if(!addressStreet){
-            missing= 'addressStreet';
+        }if(!productID){
+            badValue= 'productID';
             throw 1
-        }if(!addressCity){
-            missing= 'addressCity';
+        }if(!measurementType){
+            badValue= 'measurementType';
             throw 1
-        }if(!addressState){
-            missing= 'addressState';
+        }if(!quantity){
+            badValue= 'quantity';
             throw 1
-        }if(!zipCode){
-            missing= 'zipCode';
+        }if(!price){
+            badValue= 'price';
             throw 1
-        }if(zipCode.length !== 5){
-            console.log(zipCode, zipCode.length)
+        }if (isNaN(farmID)){
+            badValue= 'farmID';
             throw 2
-        }if (isNaN(zipCode)){
+        }if (isNaN(productID)){
+            badValue= 'productID';
+            throw 2
+        }if (isNaN(quantity)){
+            badValue= 'quantity';
+            throw 2
+        }if (isNaN(price)){
+            badValue= 'price';
+            throw 2
+        }if (!isNaN(measurementType)){
+            badValue= 'measurementType';
             throw 3
         }
+        const [farmCheck] = await dbMethods.findById('farms', farmID);
+        if (!farmCheck){
+            throw 4
+        }
+        const [productCheck] = await dbMethods.findById('products', productID);
+        if (!productCheck){
+            throw 5
+        }
+        // #endregion
         
-        const [farmID] = await dbMethods.add(table, farm);
+        const [newSupply] = await dbMethods.add(table, req.body);
         
-        if(farmID){
-            console.log('new farm id:', farmID);
-            const ownerAdded = await dbMethods.add('farmOwner', {farmID: farmID, ownerID: req.user.id});
-            if (ownerAdded){
-                console.log('ownerAdded: ', ownerAdded);
-                const farm = await dbMethods.findById(table, farmID);
-                if(farm){
-                    res.status(200).json(farm);
-                }
-            }
-            else{
-                res.status(500).json({message: 'Error adding owner to new farm', error: err});
+        if(newSupply){
+            console.log('New Supply id: ', newSupply);
+            const supplies = await db('supply as s')
+            .where({id: newSupply})
+            .leftJoin('farms as f', 'f.id', 's.farmID')
+            .leftJoin('products as p', 'p.id', 's.productID')
+            .select('f.name as farmName', 'p.* as product', 's.*', );
+            if(supplies){
+                res.status(200).json(supplies)
             }
         }
     }catch(err){
         if(err === 1){
-            res.status(400).json({message: `Missing field: ${missing}`});
+            res.status(400).json({message: `Missing field: ${badValue}`});
         }else if(err === 2){
-            res.status(400).json({message: `Zip code must be five digits.`});
+            res.status(400).json({message: `${badValue} must be a number`});
         }else if(err === 3){
-            res.status(400).json({message: `Zip code must be a number.`});
+            res.status(400).json({message: `${badValue} must be a string`});
+        }else if(err === 4){
+            res.status(404).json({message: `Farm with ID ${farmID} not found`});
+        }else if(err === 5){
+            res.status(404).json({message: `Product with ID ${productID} not found`});
         }else{
             console.log(err);
-            res.status(500).json({message: 'Server could not add farm.', error: err});
+            res.status(500).json({message: 'Server could not add supply.', error: err});
         }
     }
 });
@@ -192,76 +213,6 @@ router.get('/product/:id', async (req, res) => {
 });
 
 
-
-// get all owners
-router.get('/owners', async (req, res) => {
-    try{
-        const owner = await db('farmOwner')
-        .select('farmOwner.*')
-        if (owner){
-            res.status(200).json(owner);
-        }
-        else {
-            res.status(404).json({message: `Owners not found`});
-        }
-    }catch(err){
-        console.log('Get all owners error: ', err);
-        switch(err){
-            default: res.status(500).json({message: 'Error getting farm owner information'});
-                break;
-        }
-    }
-});
-
-// get farm by param id
-router.get('/:id', async (req, res) => {
-    try{
-        const farm = await dbMethods.findById(table, req.params.id);
-        if(farm){
-            res.status(200).json(farm);
-        }else{
-            throw 404;
-        }
-    }catch(err){
-        console.log('Get farm by id error: ', err);
-        switch(err){
-            case 404: res.status(404).json({message: 'Farm with specified ID not found'});
-                break;
-            default: res.status(500).json({message: 'Error getting farm information'});
-                break;
-        }
-    }
-});
-
-// get owner by farm ID
-router.get('/:id/owner', async (req, res) => {
-    try{
-        const farm = await dbMethods.findById(table, req.params.id);
-        if(farm){
-            const owner = await db('farmOwner')
-            .where({'farmOwner.farmID': req.params.id})
-            .leftJoin('users as u', 'u.id', 'farmOwner.ownerID')
-            .select('u.*')
-            .first();
-            if (owner){
-                res.status(200).json(owner);
-            }
-            else {
-                res.status(404).json({message: `Owner of ${farm.name} not found`});
-            }
-        }else{
-            throw 404;
-        }
-    }catch(err){
-        console.log('Get farm by id error: ', err);
-        switch(err){
-            case 404: res.status(404).json({message: 'Farm with specified ID not found'});
-                break;
-            default: res.status(500).json({message: 'Error getting farm information'});
-                break;
-        }
-    }
-});
 
 // update farm by id, can also update owner
 router.put('/:id', async (req, res) => {
