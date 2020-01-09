@@ -1,10 +1,8 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
-const farmDb = require('./farms-model.js')
-const userDb = require('../users/users-model.js');
 const dbMethods = require('../data/db-model.js')
-
 const db = require('../data/db-config.js');
+
 const table = 'farms';
 
 // new farm
@@ -111,6 +109,7 @@ router.get('/farm', async (req, res) => {
     }
 });
 
+// get all owners
 router.get('/owners', async (req, res) => {
     try{
         const owner = await db('farmOwner')
@@ -180,6 +179,7 @@ router.get('/:id/owner', async (req, res) => {
     }
 });
 
+// update farm by id, can also update owner
 router.put('/:id', async (req, res) => {
     const { name, addressStreet, addressCity, addressState, zipCode, password, newOwnerID } = req.body;
     const newValues = {name, addressStreet, addressCity, addressState, zipCode};
@@ -257,6 +257,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+// delete owner by id
 router.delete('/:id', async (req, res) => {
     const {password} = req.body;
     console.log('Attempting to delete farm with id: ', req.params.id)
