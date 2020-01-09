@@ -272,7 +272,7 @@ router.delete('/:id', async (req, res) => {
     // console.log(req.body);
     // console.log(req.body.password);
     try{
-        const farm = await dbMethods(findById(table, req.params.id))
+        const farm = await dbMethods.findById(table, req.params.id);
         if (farm){
             if(password){
                 const user = await db('users')
