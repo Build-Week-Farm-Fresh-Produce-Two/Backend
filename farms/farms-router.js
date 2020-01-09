@@ -180,88 +180,66 @@ router.get('/:id/owner', async (req, res) => {
     }
 });
 
-
-
-router.put('/farm', async (req, res) => {
-    const {username, email, cohort, name} = req.body;
-    const newValues = {username, email, cohort, name};
-    Object.keys(newValues).forEach(key => newValues[key] === undefined && delete newValues[key])
-    
-    for(let val in newValues){
-        if(typeof newValues[val] === 'string'){
-            newValues[val] = newValues[val].toLowerCase();
-        } 
-    };
-
-    let {password} = req.body;
-    const {newPassword} = req.body;
+router.put('/:id', async (req, res) => {
+    const newValues = { name, addressStreet, addressCity, addressState, zipCode } = req.body;
+    const {password, newOwnerID} = req.body;
     
     try{
-        if (!password){
+        const farm = await dbMethods.findById(table, req.params.id);
+        if(isNaN(newOwnerID)){
             throw 4
         }
-        if(username){
-            if(!(/^[a-z][a-z0-9_]*$/i.test(username))){
-                throw 1
-            }
-            const foundUsername = await db('users')
-            .where({username: newValues.username})
-            .first();
-
-            if(foundUsername && foundUsername.username !== newValues.username){
+        const newOwner = await dbMethods.findById('users', req.params.id);
+        if (!newOwner){
+            throw 5
+        }
+        if (farm){
+            console.log(`Updating farm id: ${farm.id} name: ${farm.name}: new values: `, newValues);
+            if(password){
+                const user = await db('users')
+                .where({id: req.user.id})
+                .first();
+                if(user && bcrypt.compareSync(password, user.password)){
+                    const ownerRow = await db('farmOwner')
+                    .where({farmID: req.params.id})
+                    .select('farmOwner.*')
+                    .first();
+                    if (ownerRow && ownerRow.ownerID === req.user.id){
+                        if (newOwnerID){
+                            await dbMethods.update('farmOwner', ownerRow.id, {ownerID: newOwnerID})
+                        }
+                            await dbMethods.update(table, ownerRow.farmID, newValues);
+                            const newFarm = await dbMethods.findById(table, req.params.id);
+                        res.status(200).json({message: `Farm ${farm.name} successfully updated`, farm: newFarm});
+                    }else{
+                        console.log('ownerID, req.user.id: ', ownerID, req.user.id);
+                        throw 3
+                    }
+                }else{
+                    throw 1
+                }
+            }else{
                 throw 2
             }
-        }
-
-        if(email){
-            const foundEmail = await db('users')
-            .where({email: newValues.email})
-            .first();
-
-            if(foundEmail && foundEmail.email !== newValues.email){
-                throw 3
-            }
-        }
-
-        const user = await db('users')
-            .where({id: req.user.id})
-            .first();
-
-        if(user && bcrypt.compareSync(password, user.password)){
-            console.log(password)
-            if(newPassword){
-                password = bcrypt.hashSync(newPassword, 8);
-            }
-            const updated = await userDb.update(req.user.id, newPassword ? {...newValues, password} : {...newValues});
-            if(updated){
-                const updatedUser = await userDb
-                .findBy({id: req.user.id})
-                .select('id', 'username', 'email', 'name', 'cohort');
-                
-                res.status(200).json({...updatedUser});
-            }else{
-                throw 'User could not be updated'
-            }
         }else{
-            throw 4
+            throw 404
         }
     }catch(err){
-        console.log(err);
-        switch(err){
-            case 1:
-                res.status(400).json({message: 'Username must only contain characters A-Z, _, and 0-9. Username must start with a letter.'});
-                break;
-            case 2: 
-                res.status(409).json({message: `Username '${username}' is already in use.`});
-                break;
-            case 3: 
-                res.status(409).json({message: `There is already an account associated with that email`});
-                break;                
-            case 4: 
-                res.status(409).json({message: 'Invalid credentials.'});
-                break;
-            default:  res.status(500).json({message: 'Error updating user.'});
+        if(err === 1){
+            res.status(403).json({message: 'Invalid credentials.'});
+        }else if(err === 2){
+            res.status(400).json({message: 'Please provide password.'});
+        }else if(err === 3){
+            res.status(403).json({message: 'Only the owner of a farm may update it.'});
+        }else if(err === 4){
+            res.status(400).json({message: 'New owner ID must be a number.'});
+        }else if(err === 5){
+            res.status(404).json({message: `No user found for newOwnerID: ${newOwnerID}`});
+        }else if(err === 404){
+            res.status(404).json({message: `Farm with ID ${req.params.id} not found.`});
         }
+        console.log('Update farm by id 500 catch error: ', err);
+        res.status(500).json({message: 'Error updating farm.', error: err});
     }
 });
 
@@ -307,7 +285,6 @@ router.delete('/:id', async (req, res) => {
         }else if(err === 2){
             res.status(400).json({message: 'Please provide password.'});
         }else if(err === 3){
-            // console.log('ownerID, req.user.id: ', ownerID, req.user.id);
             res.status(403).json({message: 'Only the owner of a farm may delete it.'});
         }else if(err === 404){
             res.status(404).json({message: `Farm with ID ${req.params.id} not found.`});
