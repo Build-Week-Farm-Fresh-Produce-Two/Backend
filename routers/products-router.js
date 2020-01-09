@@ -65,38 +65,39 @@ router.get('/', async (req, res) => {
 // get product by param id
 router.get('/id/:id', async (req, res) => {
     try{
-        const farm = await dbMethods.findById(table, req.params.id);
-        if(farm){
-            res.status(200).json(farm);
+        const product = await dbMethods.findById(table, req.params.id);
+        if(product){
+            res.status(200).json(product);
         }else{
             throw 404;
         }
     }catch(err){
-        console.log('Get farm by id error: ', err);
+        console.log('Get product by id error: ', err);
         switch(err){
-            case 404: res.status(404).json({message: 'Farm with specified ID not found'});
+            case 404: res.status(404).json({message: 'Product with specified ID not found'});
                 break;
-            default: res.status(500).json({message: 'Error getting farm information'});
+            default: res.status(500).json({message: 'Error getting product information'});
                 break;
         }
     }
 });
 
 // get product by name
-router.get('/name/:id', async (req, res) => {
+router.get('/name/:name', async (req, res) => {
     try{
-        const farm = await dbMethods.findById(table, req.params.id);
-        if(farm){
-            res.status(200).json(farm);
+        console.log('Get products by name: ', req.params.name);
+        const products = await dbMethods.searchBy(table, 'name', req.params.name);
+        if(products){
+            res.status(200).json(product);
         }else{
             throw 404;
         }
     }catch(err){
         console.log('Get farm by id error: ', err);
         switch(err){
-            case 404: res.status(404).json({message: 'Farm with specified ID not found'});
+            case 404: res.status(404).json({message: `Products including "${req.params.name}" not found`});
                 break;
-            default: res.status(500).json({message: 'Error getting farm information'});
+            default: res.status(500).json({message: 'Error getting products by name'});
                 break;
         }
     }
