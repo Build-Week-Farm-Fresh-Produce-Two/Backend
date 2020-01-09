@@ -93,7 +93,7 @@ router.get('/name/:name', async (req, res) => {
         console.log('Get products by name: ', req.params.name);
         const products = await dbMethods.searchBy(table, 'name', req.params.name);
         if(products){
-            res.status(200).json(product);
+            res.status(200).json(products);
         }else{
             throw 404;
         }
@@ -114,7 +114,7 @@ router.get('/desc/:desc', async (req, res) => {
         console.log('Get products by desc: ', req.params.desc);
         const products = await dbMethods.searchBy(table, 'description', req.params.desc);
         if(products){
-            res.status(200).json(product);
+            res.status(200).json(products);
         }else{
             throw 404;
         }
