@@ -92,7 +92,7 @@ router.get('/farm', async (req, res) => {
             .first();
         if(fID){
             console.log('fID, fID.farmID: ', fID, fID.farmID)
-            const farm = await dbMethods.findById(table, fID.farmID);
+            const farm = await dbMethods.findById('farms', fID.farmID);
             if(farm){
                 console.log('get supplies by token farm: ', farm);
                 const supplies = await db('supply as s')
@@ -129,7 +129,7 @@ router.get('/farm/:id', async (req, res) => {
             throw 1
         }
         console.log('get supplies by farm by id: ', req.params.id);
-        const farm = await dbMethods.findBy(table, {farmID: req.params.id});
+        const farm = await dbMethods.findBy('farms', {farmID: req.params.id});
         if(farm){
             const supplies = await db('supply as s')
             .where({farmID: farm.id})
