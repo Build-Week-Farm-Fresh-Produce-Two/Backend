@@ -45,21 +45,21 @@ router.post('/', async (req, res) => {
             badValue= 'measurementType';
             throw 3
         }
-        const [farmCheck] = await dbMethods.findById('farms', farmID);
+        const farmCheck = await dbMethods.findById('farms', farmID);
         if (!farmCheck){
             throw 4
         }
-        const [productCheck] = await dbMethods.findById('products', productID);
+        const productCheck = await dbMethods.findById('products', productID);
         if (!productCheck){
             throw 5
         }
-        const [supplyCheck] = await dbMethods.findByMultiple(table, {farmID: farmID}, {productID: productID});
+        const supplyCheck = await dbMethods.findByMultiple(table, {farmID: farmID}, {productID: productID});
         if (supplyCheck){
             throw 6
         }
         // #endregion
         
-        const [newSupply] = await dbMethods.add(table, req.body);
+        const newSupply = await dbMethods.add(table, req.body);
         
         if(newSupply){
             console.log('New Supply id: ', newSupply);
@@ -67,7 +67,8 @@ router.post('/', async (req, res) => {
             .where({id: newSupply})
             .leftJoin('farms as f', 'f.id', 's.farmID')
             .leftJoin('products as p', 'p.id', 's.productID')
-            .select('f.name as farmName', 'p.* as product', 's.*', );
+            .select('f.name as farmName', 'p.* as product', 's.*')
+            .first();
             if(supplies){
                 res.status(200).json(supplies)
             }
