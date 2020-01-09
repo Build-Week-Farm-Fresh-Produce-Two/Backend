@@ -55,6 +55,7 @@ router.post('/', async (req, res) => {
         }
         const supplyCheck = await dbMethods.findByMultiple(table, {farmID: farmID}, {productID: productID});
         if (supplyCheck){
+            console.log('supplyCheck', supplyCheck);
             throw 6
         }
         // #endregion
