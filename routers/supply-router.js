@@ -69,7 +69,8 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     try{
         const supplies = await db('supply as s')
-            .select('s.*')
+        .leftJoin('products as p', 'p.id', 's.productID')
+        .select('s.*', 'p.* as product')
         if(supplies){
             res.status(200).json(supplies)
         }else{
@@ -152,7 +153,7 @@ router.get('/farm/:id', async (req, res) => {
     }
 });
 
-// get farms and supply by product ID- send farm name, id, and the supply
+// get farms and supply by product ID
 router.get('/supply/product/:id', async (req, res) => {
     try{
         if (isNaN(req.params.id)){
