@@ -65,7 +65,7 @@ router.post('/', async (req, res) => {
             throw 6
         }
         // #endregion
-        
+        console.log('supply post req.body: ', req.body);
         const [newSupply] = await dbMethods.add(table, req.body);
         
         if(newSupply){
@@ -107,7 +107,7 @@ router.get('/', async (req, res) => {
     try{
         const supplies = await db('supply as s')
         .leftJoin('products as p', 'p.id', 's.productID')
-        .select('s.*', 'p.* as product')
+        .select('p.* as product', 's.*')
         if(supplies){
             res.status(200).json(supplies)
         }else{
@@ -283,6 +283,7 @@ try{
     if (!supplyCheck){
         throw 5
     }
+    // if ()
     // #endregion
     const newSupply = await dbMethods.update(table, req.params.id, {measurementType, quantity, price});
     
