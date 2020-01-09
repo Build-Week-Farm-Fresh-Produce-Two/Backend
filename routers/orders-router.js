@@ -68,8 +68,9 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     try{
         const orders = await db('orders as o')
-            .select('o.*')
-        if(farms){
+            .leftJoin('orderedProducts as op', 'op.orderID', 'o.id')
+            .select('op.* as orderedProducts', 'o.*')
+        if(orders){
             res.status(200).json(orders)
         }else{
             console.log('Get all orders 404 error', orders);
