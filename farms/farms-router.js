@@ -279,14 +279,14 @@ router.delete('/:id', async (req, res) => {
                 .where({id: req.user.id})
                 .first();
                 if(user && bcrypt.compareSync(password, user.password)){
-                    const ownerID = await db('farmOwner')
+                    const ownerRow = await db('farmOwner')
                     .where({farmID: req.params.id})
-                    .select('farmOwner.ownerID')
+                    .select('farmOwner.*')
                     .first();
-                    if (ownerID && ownerID.ownerID === req.user.id){
-                        console.log('ownerID, req.user.id: ', ownerID, req.user.id);
-                        await dbMethods.remove('farmOwner', {ownerID: ownerID})
-                        await dbMethods.remove(table, req.params.id);
+                    if (ownerRow && ownerRow.ownerID === req.user.id){
+                        console.log('ownerRow.ownerID, req.user.id: ', ownerRow.ownerID, req.user.id);
+                        await dbMethods.remove('farmOwner', ownerRow.farmID)
+                        await dbMethods.remove(table, ownerRow.farmID);
                         res.status(200).json({message: `Farm ${farm.name} successfully deleted`});
                     }else{
                         console.log('ownerID, req.user.id: ', ownerID, req.user.id);

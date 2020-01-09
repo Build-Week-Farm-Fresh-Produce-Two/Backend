@@ -44,7 +44,7 @@ async function remove(table, value){
     await db.transaction(async trx => {
         try{
              await trx(table)
-            .where({id});
+            .where(value);
 
             const rowDeleted = await trx(table)
             .where(value)
