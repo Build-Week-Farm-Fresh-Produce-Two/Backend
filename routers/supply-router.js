@@ -337,6 +337,7 @@ router.delete('/:id', async (req, res) => {
     try{
         const supply = await dbMethods.findById(table, req.params.id);
         if (supply){
+            console.log('supply: ', supply);
             if (supply.farmID !== req.user.farmID){
                 throw 3
             }
