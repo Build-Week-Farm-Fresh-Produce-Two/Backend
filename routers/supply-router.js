@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
             throw 5
         }
         const supplyCheck = await dbMethods.findByMultiple(table, {farmID: farmID}, {productID: productID});
-        if (supplyCheck){
+        if (supplyCheck.length > 0){
             console.log('supplyCheck', supplyCheck);
             throw 6
         }
