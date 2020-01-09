@@ -161,21 +161,24 @@ router.get('/product/:id', async (req, res) => {
             throw 1
         }
         const product = await dbMethods.findById('products', req.params.id);
-        if(!product){
+        if(product){
+            console.log('product: ', product)
+            console.log('get supplies by productID: ', req.params.id)
+            const supplies = await db('supply as s')
+            .where({productID: req.params.id})
+            .leftJoin('farms as f', 'f.id', 's.farmID')
+            .leftJoin('products as p', 'p.id', 's.productID')
+            .select('f.name as farmName', 'p.* as product', 's.*', );
+            if(supplies){
+                res.status(200).json(supplies)
+            }
+            else{
+                res.status(404).json({message: 'Supplies with specified product ID not found'});
+            }
+        }else{
+            console.log('product: ', product)
             throw 2
-        }
-        console.log('get supplies by productID: ', req.params.id)
-        const supplies = await db('supply as s')
-        .where({productID: req.params.id})
-        .leftJoin('farms as f', 'f.id', 's.farmID')
-        .leftJoin('products as p', 'p.id', 's.productID')
-        .select('f.name as farmName', 'p.* as product', 's.*', );
-        if(supplies){
-            res.status(200).json(supplies)
-        }
-        else{
-            res.status(404).json({message: 'Supplies with specified product ID not found'});
-        }
+    }
     }catch(err){
         console.log(err);
         if(err === 1){
