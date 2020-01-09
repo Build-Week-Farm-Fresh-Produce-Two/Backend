@@ -53,6 +53,10 @@ router.post('/', async (req, res) => {
         if (!productCheck){
             throw 5
         }
+        const [supplyCheck] = await dbMethods.findByMultiple(table, {farmID: farmID}, {productID: productID});
+        if (supplyCheck){
+            throw 6
+        }
         // #endregion
         
         const [newSupply] = await dbMethods.add(table, req.body);
@@ -79,6 +83,8 @@ router.post('/', async (req, res) => {
             res.status(404).json({message: `Farm with ID ${farmID} not found`});
         }else if(err === 5){
             res.status(404).json({message: `Product with ID ${productID} not found`});
+        }else if(err === 6){
+            res.status(409).json({message: `Farm id ${farmID} already has a supply for Product with ID ${productID}`});
         }else{
             console.log(err);
             res.status(500).json({message: 'Server could not add supply.', error: err});
