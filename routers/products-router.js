@@ -46,18 +46,18 @@ router.post('/', async (req, res) => {
 // get all products
 router.get('/', async (req, res) => {
     try{
-        const farms = await db('farms as f')
-            .select('f.*')
-        if(farms){
-            res.status(200).json(farms)
+        const products = await db('products as p')
+            .select('p.*')
+        if(products){
+            res.status(200).json(products)
         }else{
-            console.log('Get all farms 404 error', farms);
-            res.status(404).json({message: `Error loading farms`});
+            console.log('Get all products 404 error', products);
+            res.status(404).json({message: `Error loading products`});
         }
         
     }catch(err){
-        console.log('Get all farms 500 error', err);
-        res.status(500).json({message: 'Error getting user information.'});
+        console.log('Get all products 500 error', err);
+        res.status(500).json({message: 'Error getting products information.'});
     }
 });
 
