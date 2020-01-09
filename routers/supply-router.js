@@ -129,7 +129,7 @@ router.get('/farm/:id', async (req, res) => {
             throw 1
         }
         console.log('get supplies by farm by id: ', req.params.id);
-        const farm = await dbMethods.findBy('farms', {farmID: req.params.id});
+        const farm = await dbMethods.findBy('farms', {id: req.params.id});
         if(farm){
             const supplies = await db('supply as s')
             .where({farmID: farm.id})
