@@ -283,7 +283,7 @@ router.delete('/:id', async (req, res) => {
                     .where({farmID: req.params.id})
                     .select('farmOwner.ownerID')
                     .first();
-                    if (ownerID && ownerID === req.user.id){
+                    if (ownerID && ownerID.ownerID === req.user.id){
                         console.log('ownerID, req.user.id: ', ownerID, req.user.id);
                         await dbMethods.remove('farmOwner', {ownerID: ownerID})
                         await dbMethods.remove(table, req.params.id);
@@ -313,7 +313,7 @@ router.delete('/:id', async (req, res) => {
             res.status(404).json({message: `Farm with ID ${req.params.id} not found.`});
         }
         console.log('Delete farm by id 500 catch error: ', err);
-        res.status(500).json({message: 'Error deleting farm.', err});
+        res.status(500).json({message: 'Error deleting farm.', error: err});
     }
 });
 
