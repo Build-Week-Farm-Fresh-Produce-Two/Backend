@@ -16,13 +16,13 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 | addressCity   | String         |     True |
 | addressState  | String         |     True |
 | zipCode       | Integer        |     True |
->zipCode: 5 digits
+>zipCode: Must be a string containing only 5 numbers
 
 ## users
 | Variable      | Type           | Required |
 | ------------- |:--------------:| --------:|
 | id            | Auto-generated |     True |
-| farmID        | Integer (FKEY) |     True |
+| farmID        | Integer (FKEY) |    False |
 | isFarmer      | Boolean        |     True |
 | email         | String         |     True |
 | username      | String         |     True |
