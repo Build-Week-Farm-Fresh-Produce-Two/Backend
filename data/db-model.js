@@ -7,6 +7,7 @@ module.exports = {
     add,
     update,
     remove,
+    searchBy,
 }
 
 function findBy(table, value){
@@ -19,6 +20,10 @@ function findByMultiple(table, value1, value2){
     // console.log(value1, value2)
     return db(table)
         .where({...value1, ...value2})
+}
+
+function searchBy(table, columnName, value){
+    return db(table).where(columnName, 'like', `%${value}%`)
 }
 
 function add(table, row){
