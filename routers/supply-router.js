@@ -228,8 +228,6 @@ router.get('/product/:id', async (req, res) => {
     }
 });
 
-
-
 // update supply by id
 router.put('/:id', async (req, res) => {const { farmID, productID, measurementType, quantity, price } = req.body;
 console.log('Creating new supply:  ', req.body);
@@ -311,7 +309,7 @@ try{
     }else if(err === 5){
         res.status(409).json({message: `Supply with ID ${req.params.id} not found`});
     }else if(err === 6){
-        res.status(409).json({message: `User must belong to farm to modify it's supply`});
+        res.status(403).json({message: `Only an employee of a farm may modify it's supply`});
     }else{
         console.log(err);
         res.status(500).json({message: 'Server could not add supply.', error: err});
@@ -334,31 +332,21 @@ try{
 // delete supply by id
 router.delete('/:id', async (req, res) => {
     const {password} = req.body;
-    console.log('Attempting to delete farm with id: ', req.params.id)
-    // console.log('password', password);
-    // console.log(req.body);
-    // console.log(req.body.password);
+    console.log('Attempting to delete supply with id: ', req.params.id)
+
     try{
-        const farm = await dbMethods.findById(table, req.params.id);
-        if (farm){
+        const supply = await dbMethods.findById(table, req.params.id);
+        if (supply){
+            if (supply.farmID !== req.user.farmID){
+                throw 3
+            }
             if(password){
                 const user = await db('users')
                 .where({id: req.user.id})
                 .first();
                 if(user && bcrypt.compareSync(password, user.password)){
-                    const ownerRow = await db('farmOwner')
-                    .where({farmID: req.params.id})
-                    .select('farmOwner.*')
-                    .first();
-                    if (ownerRow && ownerRow.ownerID === req.user.id){
-                        console.log('ownerRow.ownerID, req.user.id: ', ownerRow.ownerID, req.user.id);
-                        await dbMethods.remove('farmOwner', {farmID: ownerRow.farmID})
-                        await dbMethods.remove(table, {id: ownerRow.farmID});
-                        res.status(200).json({message: `Farm ${farm.name} successfully deleted`});
-                    }else{
-                        console.log('ownerID, req.user.id: ', ownerRow.ownerID, req.user.id);
-                        throw 3
-                    }
+                    await dbMethods.remove(table, {id: req.params.id});
+                    res.status(200).json({message: `Supply with id: ${supply.id} successfully deleted`});
                 }else{
                     throw 1
                 }
@@ -374,9 +362,9 @@ router.delete('/:id', async (req, res) => {
         }else if(err === 2){
             res.status(400).json({message: 'Please provide password.'});
         }else if(err === 3){
-            res.status(403).json({message: 'Only the owner of a farm may delete it.'});
+            res.status(403).json({message: `Only an employee of a farm may modify it's supply`});
         }else if(err === 404){
-            res.status(404).json({message: `Farm with ID ${req.params.id} not found.`});
+            res.status(404).json({message: `Supply with ID ${req.params.id} not found.`});
         }
         console.log('Delete farm by id 500 catch error: ', err);
         res.status(500).json({message: 'Error deleting farm.', error: err});

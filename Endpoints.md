@@ -57,8 +57,9 @@ https://bestfarm.herokuapp.com/api/
     | /supply/farm/        | GET    |     True | Required   | None     | Get supply by farm by token        |
     | /supply/farm/:id     | GET    |     True | Required   | None     | Get supply by farm by ID           |
     | /supply/product/:id  | GET    |     True | Required   | None     | Get farms and supply by product ID |
+    | /supply/:id          | PUT    |     True | Required   | Supply   | Update supply by supply ID.        |
+    | /supply/:id          | DELETE |    False | Required   | password | Delete supply by supply ID.        |
 
-    update called on order, check quantities
     delete- remove product supply from farm
 - ### orders
     | Path              | Type   | Deployed | Auth     | Body | Description |
