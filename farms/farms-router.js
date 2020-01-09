@@ -284,6 +284,7 @@ router.delete('/:id', async (req, res) => {
                     .select('farmOwner.ownerID')
                     .first();
                     if (ownerID && ownerID === req.user.id){
+                        console.log('ownerID, req.user.id: ', ownerID, req.user.id);
                         await dbMethods.remove('farmOwner', {ownerID: ownerID})
                         await dbMethods.remove(table, req.params.id);
                         res.status(200).json({message: `Farm ${farm.name} successfully deleted`});
@@ -305,6 +306,7 @@ router.delete('/:id', async (req, res) => {
         }else if(err === 2){
             res.status(400).json({message: 'Please provide password.'});
         }else if(err === 3){
+            console.log('ownerID, req.user.id: ', ownerID, req.user.id);
             res.status(403).json({message: 'Only the owner of a farm may delete it.'});
         }else if(err === 404){
             res.status(404).json({message: `Farm with ID ${req.params.id} not found.`});
