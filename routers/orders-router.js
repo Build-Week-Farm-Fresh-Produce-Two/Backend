@@ -69,7 +69,7 @@ router.get('/', async (req, res) => {
     try{
         const orders = await db('orders as o')
             .leftJoin('orderedProducts as op', 'op.orderID', 'o.id')
-            .select('op.* as orderedProducts', 'o.*')
+            .select('op.*', 'o.*')
         if(orders){
             res.status(200).json(orders)
         }else{
@@ -82,28 +82,26 @@ router.get('/', async (req, res) => {
     }
 });
 
-// get farm by token
+// get orders by farm by token
 router.get('/farm', async (req, res) => {
     try{
-        const fID = await db('users as u')
-            .where({'u.id': req.user.id})
-            .select('u.farmID')
-            .first();
-        if(fID){
-            console.log('fID, fID.farmID: ', fID, fID.farmID)
-            const farm = await dbMethods.findById(table, fID.farmID);
-            if(farm){
-                res.status(200).json(farm);
-            }
-            else{
-                res.status(404).json({message: 'Farm with specified ID not found'});
+        const farm = await dbMethods.findById(table, req.user.farmID);
+        if(farm){
+            const orders = await db('orders as o')
+                .where({farmID: farm.id})
+                .leftJoin('supply as s', 's.farmID', req.user.farmID)
+                .leftJoin('orderedProducts as op', 'op.orderID', 'o.id')
+                .select('op.*', 'o.*')
+            if(orders){
+                res.status(200).json(orders)
+            }else{
+                console.log('Get all orders 404 error', orders);
+                res.status(404).json({message: `Error loading orders`});
             }
         }
         else{
-            console.log('Get farm by token 404 error: userID/farmID', req.user.id, farmID);
-            res.status(404).json({message: `Farm with id of ${farmID} of user with id ${req.user.id} not found.`});
+            res.status(404).json({message: 'Farm with specified ID not found'});
         }
-        
     }catch(err){
         console.log(err);
         res.status(500).json({message: 'Error getting farm by token.'});
