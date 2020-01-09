@@ -61,13 +61,28 @@ https://bestfarm.herokuapp.com/api/
     | /supply/:id          | DELETE |     True | Required   | password | Delete supply by supply ID.        |
 
 - ### orders
-    | Path              | Type   | Deployed | Auth     | Body | Description |
-    | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
+    | Path                 | Type   | Deployed | Auth (JWT) | Body                     | Description                          |
+    | -------------------- |:------:|:--------:|:---------: |:------------------------:| ------------------------------------ |
+    | /orders/             | POST   |    false | Required   | Order, OrderedProducts[] | Create new order                     |
+    | /orders/             | GET    |    false | Required   | None                     | Get all orders (debug only, remove)  |
+    | /orders/farm/        | GET    |    false | Required   | None                     | Get order by farm by token           |
+    | /orders/user/        | GET    |    false | Required   | None                     | Get order by user by token           |
+    | /orders/user/farm    | GET    |    false | Required   | None                     | Get order by user and farm by params |
+    | /orders/:id          | PUT    |    false | Required   | Order, OrderedProducts[] | Update supply by supply ID.          |
+    | /orders/:id          | DELETE |    false | Required   | password                 | Delete supply by supply ID.          |
 
-    c
-    r
-    u
-    d
+    create- loop through product in req.body, test for bad entries and then add to OP table (after creating order) use a transaction so if one fails nothing is added
+
+    read- 
+    get all orders, debug only
+    getbyorderid(user is employee or customer), 
+    getbycustomerid(token, user is customer only), 
+    getbyfarmid(token)(user is employee), 
+    getbyfarmid(token) and customer id(user === customer or farm employee)
+    
+    update- only allowed by employee for like if something was refunded.. maybe add this in future
+
+    delete by orderid, delete all orderid rows in OP
 
     orders by farm- must be employee of farm
     orders by user- must be user
