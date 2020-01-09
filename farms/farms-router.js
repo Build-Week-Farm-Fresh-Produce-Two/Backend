@@ -222,7 +222,7 @@ router.put('/:id', async (req, res) => {
                             const newFarm = await dbMethods.findById(table, req.params.id);
                         res.status(200).json({message: `Farm ${farm.name} successfully updated`, farm: newFarm});
                     }else{
-                        console.log('ownerID, req.user.id: ', ownerID, req.user.id);
+                        console.log('ownerID, req.user.id: ', ownerRow.ownerID, req.user.id);
                         throw 3
                     }
                 }else{
@@ -281,7 +281,7 @@ router.delete('/:id', async (req, res) => {
                         await dbMethods.remove(table, {id: ownerRow.farmID});
                         res.status(200).json({message: `Farm ${farm.name} successfully deleted`});
                     }else{
-                        console.log('ownerID, req.user.id: ', ownerID, req.user.id);
+                        console.log('ownerID, req.user.id: ', ownerRow.ownerID, req.user.id);
                         throw 3
                     }
                 }else{
