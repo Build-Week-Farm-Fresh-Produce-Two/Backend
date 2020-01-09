@@ -39,18 +39,26 @@ https://bestfarm.herokuapp.com/api/
     | /products/id/:id     | GET    |     True | Required   | None     | Get product by param ID            |
     | /products/name/:name | GET    |     True | Required   | None     | Search/get products by param name  |
     | /products/desc/:desc | GET    |     True | Required   | None     | Search/get products by param desc  |
+    #### Update/Delete: disabled. 
+    >If products can be sold by different farms they shouldn't be allowed to be updated by anyone. If a change needs to be made make a create a new product. 
 
-    c
-    r
-    >Update/Delete: disabled. If products can be sold by different farms they shouldn't be allowed to be updated by anyone. If a change needs to be made make a create a new product. 
-    >Future- list of global products managed by us for all farms to use, then farms can create custom products tied to their farm that they can control fully.
+    #### Future:
+    >List of global products managed by us for all farms to use, then farms can create custom products tied to their farm that they can control fully.
+
 - ### supply
-    | Path              | Type   | Deployed | Auth     | Body | Description |
-    | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
+    | Path                 | Type   | Deployed | Auth (JWT) | Body     | Description                        |
+    | -------------------- |:------:|:--------:|:---------: |:--------:| ---------------------------------- |
+    | /supply/             | POST   |     True | Required   | Supply   | Create new supply                  |
+    | /supply/             | GET    |     True | Required   | None     | Get all supplies                   |
+    | /supply/farm/        | GET    |     True | Required   | None     | Get supply by farm by token        |
+    | /supply/farm/:id     | GET    |     True | Required   | None     | Get supply by farm by ID           |
+    | /supply/product/:id  | GET    |     True | Required   | None     | Get farms and supply by product ID |
 
     create
     get by farm
-    get by product name/id
+    get farms by productID(availableAt/soldBy)
+    update called on order, check quantities
+    delete- remove product supply from farm
 - ### orders
     | Path              | Type   | Deployed | Auth     | Body | Description |
     | ----------------- |:------:|:--------:|:--------:|:----:| ----------- |
