@@ -160,7 +160,7 @@ router.get('/product/:id', async (req, res) => {
         if (isNaN(req.params.id)){
             throw 1
         }
-        const product = await dbMethods.findById(table, req.params.id);
+        const product = await dbMethods.findById('products', req.params.id);
         if(!product){
             throw 2
         }
