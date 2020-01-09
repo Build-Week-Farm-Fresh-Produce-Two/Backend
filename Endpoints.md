@@ -32,8 +32,9 @@ https://bestfarm.herokuapp.com/api/
 
     >Owner can be updated with /farms/:id if newOwnerID is included.
 
+    #### Future:
     >Validate address/zip code
-    
+
 - ### products
     | Path                 | Type   | Deployed | Auth (JWT) | Body     | Description                        |
     | -------------------- |:------:|:--------:|:---------: |:--------:| ---------------------------------- |
