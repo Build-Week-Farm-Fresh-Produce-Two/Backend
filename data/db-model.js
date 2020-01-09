@@ -41,6 +41,7 @@ function update(table, id, row){
 }
 
 async function remove(table, value){
+    console.log('db-methods remove value: ', value)
     await db.transaction(async trx => {
         try{
              await trx(table)

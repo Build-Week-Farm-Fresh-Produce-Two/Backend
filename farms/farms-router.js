@@ -285,8 +285,8 @@ router.delete('/:id', async (req, res) => {
                     .first();
                     if (ownerRow && ownerRow.ownerID === req.user.id){
                         console.log('ownerRow.ownerID, req.user.id: ', ownerRow.ownerID, req.user.id);
-                        await dbMethods.remove('farmOwner', ownerRow.farmID)
-                        await dbMethods.remove(table, ownerRow.farmID);
+                        await dbMethods.remove('farmOwner', {farmID: ownerRow.farmID})
+                        await dbMethods.remove(table, {id: ownerRow.farmID});
                         res.status(200).json({message: `Farm ${farm.name} successfully deleted`});
                     }else{
                         console.log('ownerID, req.user.id: ', ownerID, req.user.id);
