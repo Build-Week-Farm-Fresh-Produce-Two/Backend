@@ -309,7 +309,8 @@ router.delete('/:id', async (req, res) => {
         }else if(err === 404){
             res.status(404).json({message: `Farm with ID ${req.params.id} not found.`});
         }
-        res.status(500).json({message: 'Error deleting farm.', error: err});
+        console.log('Delete farm by id 500 catch error: ', err);
+        res.status(500).json({message: 'Error deleting farm.', err});
     }
 });
 
