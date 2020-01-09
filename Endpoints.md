@@ -14,6 +14,8 @@ https://bestfarm.herokuapp.com/api/
     | /users/user/all   | GET    |     True | Required   | None               | Debug only, return all users  |
     #### Future:
     >Require authorization from owner of farm to be able to join as an employee
+
+    >Validate address/zip code
     
 - ### farms
     | Path              | Type   | Deployed | Auth (JWT) | Body           | Description                                       |
@@ -29,10 +31,9 @@ https://bestfarm.herokuapp.com/api/
     >Deleting farm also deletes the farmOwner table row
 
     >Owner can be updated with /farms/:id if newOwnerID is included.
-    
-    update
-    update owner
 
+    >Validate address/zip code
+    
 - ### products
     | Path                 | Type   | Deployed | Auth (JWT) | Body     | Description                        |
     | -------------------- |:------:|:--------:|:---------: |:--------:| ---------------------------------- |
