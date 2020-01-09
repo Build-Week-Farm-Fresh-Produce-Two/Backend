@@ -76,7 +76,6 @@ router.get('/', async (req, res) => {
             console.log('Get all supplies 404 error', supplies);
             res.status(404).json({message: `Error loading supplies`});
         }
-        
     }catch(err){
         console.log('Get all supplies 500 error', err);
         res.status(500).json({message: 'Error getting all supplies.'});
@@ -94,7 +93,17 @@ router.get('/farm', async (req, res) => {
             console.log('fID, fID.farmID: ', fID, fID.farmID)
             const farm = await dbMethods.findById(table, fID.farmID);
             if(farm){
-                res.status(200).json(farm);
+                const supplies = await db('supply as s')
+                .where({farmID: farm.id})
+                .leftJoin('products as p', 'p.id', 's.productID')
+                .select('s.*', 'p.* as product')
+                if(supplies){
+                    res.status(200).json({farm: farm.name, farmID: farm.id, supplies})
+                }else{
+                    console.log('Get supplies by farm by token 404 error', supplies);
+                    res.status(404).json({message: `Error loading supplies`});
+                }
+
             }
             else{
                 res.status(404).json({message: 'Farm with specified ID not found'});
@@ -114,56 +123,59 @@ router.get('/farm', async (req, res) => {
 // get supplies by farm by ID
 router.get('/farm/:id', async (req, res) => {
     try{
-        const fID = await db('users as u')
-            .where({'u.id': req.user.id})
-            .select('u.farmID')
-            .first();
-        if(fID){
-            console.log('fID, fID.farmID: ', fID, fID.farmID)
-            const farm = await dbMethods.findById(table, fID.farmID);
-            if(farm){
-                res.status(200).json(farm);
-            }
-            else{
-                res.status(404).json({message: 'Farm with specified ID not found'});
+        if (isNaN(req.params.id)){
+            throw 1
+        }
+        console.log('get supplies by farm by id: ', req.params.id);
+        const farm = await dbMethods.findById(table, {farmID: req.params.id});
+        if(farm){
+            const supplies = await db('supply as s')
+            .where({farmID: farm.id})
+            .leftJoin('products as p', 'p.id', 's.productID')
+            .select('s.*', 'p.* as product')
+            if(supplies){
+                res.status(200).json({farm: farm.name, farmID: farm.id, supplies})
+            }else{
+                console.log('Get supplies by farm by id 404 error', supplies);
+                res.status(404).json({message: `Error loading supplies`});
             }
         }
         else{
-            console.log('Get farm by token 404 error: userID/farmID', req.user.id, farmID);
-            res.status(404).json({message: `Farm with id of ${farmID} of user with id ${req.user.id} not found.`});
+            res.status(404).json({message: 'Farm with specified ID not found'});
         }
-        
     }catch(err){
         console.log(err);
-        res.status(500).json({message: 'Error getting farm by token.'});
+        if(err === 1){
+            res.status(400).json({message: 'ID must be a number.'});
+        }
+        res.status(500).json({message: `Error getting farm by id: ${req.params.id}`, err});
     }
 });
 
 // get farms and supply by product ID- send farm name, id, and the supply
 router.get('/supply/product/:id', async (req, res) => {
     try{
-        const fID = await db('users as u')
-            .where({'u.id': req.user.id})
-            .select('u.farmID')
-            .first();
-        if(fID){
-            console.log('fID, fID.farmID: ', fID, fID.farmID)
-            const farm = await dbMethods.findById(table, fID.farmID);
-            if(farm){
-                res.status(200).json(farm);
-            }
-            else{
-                res.status(404).json({message: 'Farm with specified ID not found'});
-            }
+        if (isNaN(req.params.id)){
+            throw 1
+        }
+        console.log('get supplies by productID: ', req.params.id)
+        const supplies = await db('supply as s')
+        .where({productID: req.params.id})
+        .leftJoin('farms as f', 'f.id', 's.farmID')
+        .leftJoin('products as p', 'p.id', 's.productID')
+        .select('f.name as farmName', 's.*', 'p.* as product');
+        if(supplies){
+            res.status(200).json(supplies)
         }
         else{
-            console.log('Get farm by token 404 error: userID/farmID', req.user.id, farmID);
-            res.status(404).json({message: `Farm with id of ${farmID} of user with id ${req.user.id} not found.`});
+            res.status(404).json({message: 'Supplies with specified product ID not found'});
         }
-        
     }catch(err){
         console.log(err);
-        res.status(500).json({message: 'Error getting farm by token.'});
+        if(err === 1){
+            res.status(400).json({message: 'ID must be a number.'});
+        }
+        res.status(500).json({message: 'Error getting supplies by product ID.'});
     }
 });
 
