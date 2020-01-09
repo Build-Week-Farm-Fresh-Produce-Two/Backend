@@ -24,6 +24,7 @@ router.get('/user', async (req, res) => {
     }
 });
 
+// get by id
 router.get('/:id', async (req, res) => {
     try{
         const user = await userDb.findById(req.params.id);
@@ -43,6 +44,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// put by token
 router.put('/user', async (req, res) => {
     const {username, email, cohort, name} = req.body;
     const newValues = {username, email, cohort, name};
@@ -126,6 +128,7 @@ router.put('/user', async (req, res) => {
     }
 });
 
+// delete by token
 router.delete('/user', async (req, res) => {
     const {password} = req.body;
     // console.log('password', password);
@@ -157,8 +160,7 @@ router.delete('/user', async (req, res) => {
 });
 
 
-
-// for debugging, remove when finished
+// get all users: for debugging, remove when finished
 router.get('/user/all', async (req, res) => {
     try{
         const user = await db('users as u')
