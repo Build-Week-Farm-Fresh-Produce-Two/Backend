@@ -65,7 +65,7 @@ router.post('/', async (req, res) => {
         if(newSupply){
             console.log('New Supply id: ', newSupply);
             const supplies = await db('supply as s')
-            .where({id: newSupply})
+            .where({'s.id': newSupply})
             .leftJoin('farms as f', 'f.id', 's.farmID')
             .leftJoin('products as p', 'p.id', 's.productID')
             .select('f.name as farmName', 'p.* as product', 's.*')
