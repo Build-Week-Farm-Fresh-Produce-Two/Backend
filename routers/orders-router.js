@@ -31,8 +31,8 @@ function getOrderedProducts(orderID){
 //   }
 
 
-function getAllOrderedProducts(orderArray){
-    let newArray = orderArray.map(order => {
+const getAllOrderedProducts = async (orderArray) => {
+    return orderArray.map(order => {
         db('orderedProducts as op')
         .where({'op.orderID': order.id})
         .select('op.*')
@@ -43,11 +43,11 @@ function getAllOrderedProducts(orderArray){
             return {...order, orderedProducts: [...res]}
         });
     })
-    console.log('old array: ', orderArray);
-    console.log('new array: ', newArray);
-    if (newArray.length > 0 && newArray[0] !== undefined && newArray[newArray.length-1] !== undefined){
-        return newArray;
-    }
+    // console.log('old array: ', orderArray);
+    // console.log('new array: ', newArray);
+    // if (newArray.length > 0 && newArray[0] !== undefined && newArray[newArray.length-1] !== undefined){
+    //     return newArray;
+    // }
 }
 
 // new farm
