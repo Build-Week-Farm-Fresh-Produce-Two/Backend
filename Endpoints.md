@@ -64,7 +64,7 @@ https://bestfarm.herokuapp.com/api/
     | Path                 | Type   | Deployed | Auth (JWT) | Body                     | Description                          |
     | -------------------- |:------:|:--------:|:---------: |:------------------------:| ------------------------------------ |
     | /orders/             | POST   |    false | Required   | Order, OrderedProducts[] | Create new order                     |
-    | /orders/             | GET    |    false | Required   | None                     | Get all orders (debug only, remove)  |
+    | /orders/             | GET    |     True | Required   | None                     | Get all orders (debug only, remove)  |
     | /orders/farm/        | GET    |    false | Required   | None                     | Get order by farm by token           |
     | /orders/user/        | GET    |    false | Required   | None                     | Get order by user by token           |
     | /orders/user/farm    | GET    |    false | Required   | None                     | Get order by user and farm by params |
