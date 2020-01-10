@@ -208,7 +208,7 @@ router.get('/:id', async (req, res) => {
         switch(err){
             case 403: res.status(403).json({message: 'You are not authorized to pull this order data'});
                 break;
-            case 404: res.status(404).json({message: 'Farm with specified ID not found'});
+            case 404: res.status(404).json({message: 'Order with specified ID not found'});
                 break;
             default: res.status(500).json({message: 'Error getting farm information'});
                 break;
