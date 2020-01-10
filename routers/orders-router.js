@@ -178,7 +178,45 @@ router.get('/user', async (req, res) => {
     }
 });
 
+// get order by param id
+router.get('/:id', async (req, res) => {
+    try{
+        const order = await db('orders as o')
+            .where({id: req.params.id})
+            .select('o.*')
+        if(order.length > 0){
+            if (req.user.id === order[0].customerID || req.user.farmID === order[0].farmID)
+            {
+                const ordersWithProducts = await getAllOrderedProducts(orders);
+                if (ordersWithProducts.length > 0){
+                    // console.log('ordersWithProducts success: ', ordersWithProducts);
+                    res.status(200).json(ordersWithProducts);
+                }
+                else{
+                    // console.log('ordersWithProducts error: ', ordersWithProducts);
+                    res.status(404).json({message: `Error loading ordersWithProducts`});
+                }
+            }
+            else{
+                throw 403
+            }
+        }else{
+            throw 404;
+        }
+    }catch(err){
+        console.log('Get farm by id error: ', err);
+        switch(err){
+            case 403: res.status(403).json({message: 'You are not authorized to pull this order data'});
+                break;
+            case 404: res.status(404).json({message: 'Farm with specified ID not found'});
+                break;
+            default: res.status(500).json({message: 'Error getting farm information'});
+                break;
+        }
+    }
+});
 
+// get orders by param user and farm
 router.get('/:user/:farm', async (req, res) => {
     try{
         if (Math.sign(req.params.user) !== 1 || Math.sign(req.params.farm) !== 1 ){
@@ -222,44 +260,6 @@ router.get('/:user/:farm', async (req, res) => {
         }
         console.log(err);
         res.status(500).json({message: 'Error getting orders by farmID by token.'});
-    }
-});
-
-// get order by param id
-router.get('/id/:id', async (req, res) => {
-    try{
-        const order = await db('orders as o')
-            .where({id: req.params.id})
-            .select('o.*')
-        if(order.length > 0){
-            if (req.user.id === order[0].customerID || req.user.farmID === order[0].farmID)
-            {
-                const ordersWithProducts = await getAllOrderedProducts(orders);
-                if (ordersWithProducts.length > 0){
-                    // console.log('ordersWithProducts success: ', ordersWithProducts);
-                    res.status(200).json(ordersWithProducts);
-                }
-                else{
-                    // console.log('ordersWithProducts error: ', ordersWithProducts);
-                    res.status(404).json({message: `Error loading ordersWithProducts`});
-                }
-            }
-            else{
-                throw 403
-            }
-        }else{
-            throw 404;
-        }
-    }catch(err){
-        console.log('Get farm by id error: ', err);
-        switch(err){
-            case 403: res.status(403).json({message: 'You are not authorized to pull this order data'});
-                break;
-            case 404: res.status(404).json({message: 'Farm with specified ID not found'});
-                break;
-            default: res.status(500).json({message: 'Error getting farm information'});
-                break;
-        }
     }
 });
 
