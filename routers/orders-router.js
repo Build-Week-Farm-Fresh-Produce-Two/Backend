@@ -36,7 +36,8 @@ return Promise.all(orderArray.map(order => anAsyncFunction(order)))
 
 // new farm
 router.post('/', async (req, res) => {
-    const order = { farmID, customerID, farmName, customerName, totalPrice, paymentStatus, fulfillmentStatus, orderedProducts } = req.body;
+    const { farmID, customerID, farmName, customerName, totalPrice, paymentStatus, fulfillmentStatus, orderedProducts } = req.body;
+    const order = {farmID, customerID, farmName, customerName, totalPrice, paymentStatus, fulfillmentStatus }
     let quantityArray = [];
     console.log('Creating new order:  ', order);
     let badValue = '';
@@ -84,7 +85,7 @@ router.post('/', async (req, res) => {
         }
         else {
             const supplyCheck = await db('supply')
-            .where({farmID: req.params.farm})
+            .where({farmID: farmID})
             .select('supply.*');
             if(supplyCheck){
                 for (let i = 0; i < orderedProducts.length; i++){
@@ -156,7 +157,7 @@ router.post('/', async (req, res) => {
         const postman = await db.transaction(async trx => {
             try{
                 const orderAdded = await trx(table)
-                .insert(value);
+                .insert({...order}, 'id');
 
                 const productsAdded = ''
                 const supplyUpdated = ''
