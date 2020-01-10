@@ -226,7 +226,7 @@ router.get('/:user/:farm', async (req, res) => {
 });
 
 // get order by param id
-router.get('/:id', async (req, res) => {
+router.get('/id/:id', async (req, res) => {
     try{
         const order = await db('orders as o')
             .where({id: req.params.id})
