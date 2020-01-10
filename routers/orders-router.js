@@ -38,7 +38,9 @@ function getAllOrderedProducts(orderArray){
         .select('op.*')
         .then((res)=>{
             console.log('getAllOrderedProducts map success: ', res);
-            return {...order, orderedProducts: res}
+            console.log('old object: ', order)
+            console.log('new obj test:', {...order, orderedProducts: [...res]})
+            return {...order, orderedProducts: [...res]}
         });
     })
     return newArray;
