@@ -38,7 +38,7 @@ function getAllOrderedProducts(orderArray){
         .select('op.*')
         .then((res)=>{
             console.log('getAllOrderedProducts map success: ', res);
-            return {...order, orderedProducts: OP}
+            return {...order, orderedProducts: res}
         })
         .catch(err)(
             console.log('getAllOrderedProducts map error: ', err)
