@@ -184,7 +184,7 @@ router.get('/:user/:farm', async (req, res) => {
         if (Math.sign(req.params.user) !== 1 || Math.sign(req.params.farm) !== 1 ){
             res.status(400).json({message: 'User and Farm params must be a number and must be positive'});
         }
-        if (req.user.id !== req.params.user && req.user.farmID !== req.params.farm){
+        if (req.user.id != req.params.user && req.user.farmID != req.params.farm){
             console.log(`req.user.id: ${req.user.id}, req.params.user: ${req.params.user}, req.user.farmID: ${req.user.farmID}, req.params.farm: ${req.params.farm}`);
             throw 1;
         }
@@ -232,7 +232,7 @@ router.get('/:id', async (req, res) => {
             .where({id: req.params.id})
             .select('o.*')
         if(order.length > 0){
-            if (req.user.id === order.customerID || req.user.farmID === order.farmID)
+            if (req.user.id === order[0].customerID || req.user.farmID === order[0].farmID)
             {
                 const ordersWithProducts = await getAllOrderedProducts(orders);
                 if (ordersWithProducts.length > 0){
