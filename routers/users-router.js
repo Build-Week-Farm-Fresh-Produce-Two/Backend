@@ -68,7 +68,7 @@ router.put('/user', async (req, res) => {
             .where({username: newValues.username})
             .first();
 
-            if(foundUsername && foundUsername.username !== newValues.username){
+            if(foundUsername){
                 throw 3
             }
         }
