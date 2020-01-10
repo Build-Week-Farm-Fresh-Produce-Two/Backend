@@ -46,43 +46,38 @@ router.get('/:id', async (req, res) => {
 
 // put by token
 router.put('/user', async (req, res) => {
-    const {username, email, cohort, name} = req.body;
-    const newValues = {username, email, cohort, name};
-    Object.keys(newValues).forEach(key => newValues[key] === undefined && delete newValues[key])
-    
+    const newValues = {isFarmer, farmID, email, username, name, zipCode, addressStreet, addressCity, addressState } = req.body;
+    const {password, newPassword} = req.body;
+    console.log('updating: ', user);
     for(let val in newValues){
         if(typeof newValues[val] === 'string'){
             newValues[val] = newValues[val].toLowerCase();
         } 
     };
-
-    let {password} = req.body;
-    const {newPassword} = req.body;
-    
+   
     try{
-        if (!password){
-            throw 4
+        if(!password){
+            throw 1
         }
         if(username){
             if(!(/^[a-z][a-z0-9_]*$/i.test(username))){
-                throw 1
+                throw 2
             }
             const foundUsername = await db('users')
             .where({username: newValues.username})
             .first();
 
             if(foundUsername && foundUsername.username !== newValues.username){
-                throw 2
+                throw 3
             }
         }
-
         if(email){
             const foundEmail = await db('users')
             .where({email: newValues.email})
             .first();
 
             if(foundEmail && foundEmail.email !== newValues.email){
-                throw 3
+                throw 4
             }
         }
 
@@ -91,15 +86,14 @@ router.put('/user', async (req, res) => {
             .first();
 
         if(user && bcrypt.compareSync(password, user.password)){
-            console.log(password)
             if(newPassword){
-                password = bcrypt.hashSync(newPassword, 8);
+                password = bcrypt.hashSync(newPassword, 12);
             }
             const updated = await userDb.update(req.user.id, newPassword ? {...newValues, password} : {...newValues});
             if(updated){
                 const updatedUser = await userDb
                 .findBy({id: req.user.id})
-                .select('id', 'username', 'email', 'name', 'cohort');
+                .select('id', 'username', 'email', 'name',);
                 
                 res.status(200).json({...updatedUser});
             }else{
@@ -108,22 +102,30 @@ router.put('/user', async (req, res) => {
         }else{
             throw 4
         }
+
+        res.status(422).json({message: `Username '${username}' is already in use.`});
+
     }catch(err){
-        console.log(err);
-        switch(err){
-            case 1:
-                res.status(400).json({message: 'Username must only contain characters A-Z, _, and 0-9. Username must start with a letter.'});
-                break;
-            case 2: 
-                res.status(409).json({message: `Username '${username}' is already in use.`});
-                break;
-            case 3: 
-                res.status(409).json({message: `There is already an account associated with that email`});
-                break;                
-            case 4: 
-                res.status(409).json({message: 'Invalid credentials.'});
-                break;
-            default:  res.status(500).json({message: 'Error updating user.'});
+        if(err === 1){
+            res.status(400).json({message: 'Current password is required.'});
+        }if(err === 2){
+            res.status(400).json({message: 'Username must only contain characters A-Z, _, and 0-9. Username must start with a letter.'});
+        }if(err === 3){
+            res.status(422).json({message: `Username '${username}' is already in use.`});
+        }if(err === 4){
+            res.status(422).json({message: `Email '${email}' is already in use.`});
+        }if(err === 5){
+            res.status(400).json({message: 'Invalid credentials'});
+        }
+
+        // if(err === 1){
+        //     res.status(400).json({message: `Email, username and password are required.`});
+        // }
+        
+        
+        else{
+            console.log(err);
+            res.status(500).json({message: 'Server could not update user.', error: err});
         }
     }
 });
