@@ -163,8 +163,7 @@ router.post('/', async (req, res) => {
                 .insert({...order}, 'id');
 
                 console.log('orderAdded: ', orderAdded)
-                const productsAdded = ''
-                const supplyUpdated = ''
+                let productsAdded = ''
                 if (orderAdded){
                     console.log('orderAdded inside: ', orderAdded[0])
                     for (let q = 0; q < orderedProducts.length; q++){
@@ -178,7 +177,7 @@ router.post('/', async (req, res) => {
                         }
                     } 
                 }
-                if(orderAdded && productsAdded && supplyUpdated){
+                if(orderAdded && productsAdded){
                     return true;
                 }
             }catch(err){
