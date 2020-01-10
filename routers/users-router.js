@@ -48,6 +48,9 @@ router.get('/:id', async (req, res) => {
 router.put('/user', async (req, res) => {
     const newValues = {isFarmer, farmID, email, username, name, zipCode, addressStreet, addressCity, addressState } = req.body;
     let { password, newPassword } = req.body;
+    if (newPassword === undefined){
+        newPassword = '';
+    }
     console.log('updating user- newValues: ', newValues);
     for(let val in newValues){
         if(typeof newValues[val] === 'string'){
