@@ -36,56 +36,157 @@ return Promise.all(orderArray.map(order => anAsyncFunction(order)))
 
 // new farm
 router.post('/', async (req, res) => {
-    const farm = { name, addressStreet, addressCity, addressState, zipCode } = req.body;
-    console.log('Creating new farm:  ', farm);
-    let missing = ''
+    const order = { farmID, customerID, farmName, customerName, totalPrice, paymentStatus, fulfillmentStatus, orderedProducts } = req.body;
+    let quantityArray = [];
+    console.log('Creating new order:  ', order);
+    let badValue = '';
+    let badValueIndex = '';
 
     try{
-        if(!name){
-            missing= 'name';
+    // #region error checkers
+        // #region order vars 
+        if(!farmID){
+            badValue= 'farmID';
             throw 1
-        }if(!addressStreet){
-            missing= 'addressStreet';
+        }if(!customerID){
+            badValue= 'customerID';
             throw 1
-        }if(!addressCity){
-            missing= 'addressCity';
+        }if(!farmName){
+            badValue= 'farmName';
             throw 1
-        }if(!addressState){
-            missing= 'addressState';
+        }if(!customerName){
+            badValue= 'customerName';
             throw 1
-        }if(!zipCode){
-            missing= 'zipCode';
+        }if(!totalPrice){
+            badValue= 'totalPrice';
             throw 1
-        }if(zipCode.length !== 5){
-            console.log(zipCode, zipCode.length)
+        }if(!paymentStatus){
+            badValue= 'paymentStatus';
+            throw 1
+        }if(!fulfillmentStatus){
+            badValue= 'fulfillmentStatus';
+            throw 1
+        }if (Math.sign(farmID) !== 1){
+            badValue= 'farmID';
             throw 2
-        }if (isNaN(zipCode)){
-            throw 3
+        }if (Math.sign(customerID) !== 1){
+            badValue= 'customerID';
+            throw 2
+        }if (Math.sign(totalPrice) !== 1){
+            badValue= 'totalPrice';
+            throw 2
         }
-        
-        const [farmID] = await dbMethods.add(table, farm);
-        
-        if(farmID){
-            console.log('new farm id:', farmID);
-            const ownerAdded = await dbMethods.add('farmOwner', {farmID: farmID, ownerID: req.user.id});
-            if (ownerAdded){
-                console.log('ownerAdded: ', ownerAdded);
-                const farm = await dbMethods.findById(table, farmID);
-                if(farm){
-                    res.status(200).json(farm);
+        // #endregion
+        // #region orderedProducts
+        if(!orderedProducts.length > 0){
+            badValue= 'orderedProducts';
+            throw 1
+        }
+        else {
+            const supplyCheck = await db('supply')
+            .where({farmID: req.params.farm})
+            .select('supply.*');
+            if(supplyCheck){
+                for (let i = 0; i < orderedProducts.length; i++){
+                    // #region basic vars check
+                    if (!orderedProducts[i].supplyID){
+                        badValue= `orderedProducts[${i}].supplyID`;
+                        throw 1
+                    }if (!orderedProducts[i].productName){
+                        badValue= `orderedProducts[${i}].productName`;
+                        throw 1
+                    }if (!orderedProducts[i].productDescription){
+                        badValue= `orderedProducts[${i}].productDescription`;
+                        throw 1
+                    }if (!orderedProducts[i].purchasedMeasurementType){
+                        badValue= `orderedProducts[${i}].purchasedMeasurementType`;
+                        throw 1
+                    }if (!orderedProducts[i].purchasedQuantity){
+                        badValue= `orderedProducts[${i}].purchasedQuantity`;
+                        throw 1
+                    }if (!orderedProducts[i].purchasedPrice){
+                        badValue= `orderedProducts[${i}].purchasedPrice`;
+                        throw 1
+                    }
+                    if (Math.sign(orderedProducts[i].supplyID) !== 1){
+                        badValue= `orderedProducts[${i}].supplyID`;
+                        throw 2
+                    }if (Math.sign(orderedProducts[i].purchasedQuantity) !== 1){
+                        badValue= `orderedProducts[${i}].purchasedQuantity`;
+                        throw 2
+                    }if (Math.sign(orderedProducts[i].purchasedQuantity) !== 1){
+                        badValue= `orderedProducts[${i}].purchasedQuantity`;
+                        throw 2
+                    }if (Math.sign(orderedProducts[i].purchasedPrice) !== 1){
+                        badValue= `orderedProducts[${i}].purchasedPrice`;
+                        throw 2
+                    }
+                    //#endregion
+    
+                    // check farm's supply against orderedProduct
+                    for (let s = 0; s < supplyCheck.length; s++){
+                        if (supplyCheck[s].id === orderedProducts[i].supplyID){
+                            if (supplyCheck[s].quantity < orderedProducts[i].purchasedQuantity){
+                                res.status(404).json({message: `You cannot purchase more products than are in stock. Bad value: orderedProducts[${i}] - ${orderedProducts[i].productName}`});    
+                            }
+                            if (supplyCheck[s].price !== orderedProducts[i].purchasedPrice){
+                                res.status(404).json({message: `Supply product price (${supplyCheck[s].price}) should equal orderedProduct purchase price (${orderedProducts[i].purchasedPrice})`});
+                            }
+                            if (supplyCheck[s].measurementType !== orderedProducts[i].purchasedMeasurementType){
+                                res.status(404).json({message: `Supply product measurement (${supplyCheck[s].measurementType}) should equal orderedProduct measurement (${orderedProducts[i].purchasedMeasurementType})`});
+                            }
+                            quantityArray[i] = supplyCheck[s].quantity - orderedProducts[purchasedQuantity];
+                            break;
+                        }
+                        if (s === supplyCheck.length-1){
+                            res.status(404).json({message: `orderedProducts[${i}].supplyID (${orderedProducts[i].supplyID}) not found in farm`});
+                        }
+                    }
                 }
             }
-            else{
-                res.status(500).json({message: 'Error adding owner to new farm', error: err});
+            else {
+                res.status(404).json({message: 'Farm with specified ID not found'});
             }
+        // #endregion
         }
+    // #endregion
+        
+
+
+        const postman = await db.transaction(async trx => {
+            try{
+                const orderAdded = await trx(table)
+                .insert(value);
+
+                const productsAdded = ''
+                const supplyUpdated = ''
+
+                for (let q = 0; q < orderedProducts.length; q++){
+                    let opAdded = await trx('orderedProducts')
+                    .insert(orderedProducts[q]);
+                    let suppUpdated = await trx('supply')
+                    .where({id: orderedProducts[q].supplyID})
+                    .update({quantity: quantityArray[q]});
+                    if (opAdded && suppUpdated && q === orderedProducts.length-1){
+                        productsAdded = true;
+                    }
+                } 
+                if(orderAdded && productsAdded && supplyUpdated){
+                    return true;
+                }
+            }catch(err){
+                throw err;
+            }
+        });
+        if (postman){
+            res.status(200).json({message: `Successfully posted a new order.`});
+        }
+
     }catch(err){
         if(err === 1){
-            res.status(400).json({message: `Missing field: ${missing}`});
+            res.status(400).json({message: `Missing field: ${badValue}`});
         }else if(err === 2){
-            res.status(400).json({message: `Zip code must be five digits.`});
-        }else if(err === 3){
-            res.status(400).json({message: `Zip code must be a number.`});
+            res.status(400).json({message: `${badValue} must be a number and must be positive`});
         }else{
             console.log(err);
             res.status(500).json({message: 'Server could not add farm.', error: err});
@@ -118,7 +219,6 @@ router.get('/', async (req, res) => {
         res.status(500).json({message: 'Error getting orders information.'});
     }
 });
-
 // get orders by farm by token
 router.get('/farm', async (req, res) => {
     try{
@@ -177,7 +277,6 @@ router.get('/user', async (req, res) => {
         res.status(500).json({message: 'Error getting orders by userID by token.'});
     }
 });
-
 // get order by param id
 router.get('/:id', async (req, res) => {
     try{
@@ -215,7 +314,6 @@ router.get('/:id', async (req, res) => {
         }
     }
 });
-
 // get orders by param user and farm
 router.get('/:user/:farm', async (req, res) => {
     try{

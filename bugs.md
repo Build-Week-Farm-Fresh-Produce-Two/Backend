@@ -6,5 +6,7 @@ products post isFarmer check
 
 supply C/U/D isEmployee check
 
+post order orderedProducts check supplyid exists and its farm matches the farm being bought from and also check the quantity
+
 #### Future problems: 
 users currently cannot belong to multiple farms
