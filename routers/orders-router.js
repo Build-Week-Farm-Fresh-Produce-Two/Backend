@@ -43,6 +43,8 @@ function getAllOrderedProducts(orderArray){
             return {...order, orderedProducts: [...res]}
         });
     })
+    console.log('old array: ', orderArray);
+    console.log('new array: ', newArray);
     return newArray;
 }
 
