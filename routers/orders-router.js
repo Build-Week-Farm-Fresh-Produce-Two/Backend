@@ -45,7 +45,9 @@ function getAllOrderedProducts(orderArray){
     })
     console.log('old array: ', orderArray);
     console.log('new array: ', newArray);
-    return newArray;
+    if (newArray.length){
+        return newArray;
+    }
 }
 
 // new farm
