@@ -170,7 +170,7 @@ router.post('/', async (req, res) => {
                     console.log('orderAdded inside: ', orderAdded)
                     for (let q = 0; q < orderedProducts.length; q++){
                         let opAdded = await trx('orderedProducts')
-                        .insert({...orderedProducts[q], orderID: orderArray});
+                        .insert({...orderedProducts[q], orderID: orderAdded});
                         let suppUpdated = await trx('supply')
                         .where({id: orderedProducts[q].supplyID})
                         .update({quantity: quantityArray[q]});
