@@ -15,7 +15,7 @@ function getOrderedProducts(orderID){
     .where({'op.orderID': orderID})
     .select('op.*')
 }
-async function getAllOrderedProducts(orderArray){
+const getAllOrderedProducts= async (orderArray) => {
     let newArray = orderArray.map(order => {
         let OP = await db('orderedProducts as op')
         .where({'op.orderID': order.id})
@@ -24,6 +24,19 @@ async function getAllOrderedProducts(orderArray){
     })
     return newArray;
 }
+
+// const addProducts = async (item) => {
+//     await 
+//     return 
+// }
+
+// const anAsyncFunction = async item => {
+//     return functionWithPromise(item)
+//   }
+  
+//   const getData = async () => {
+//     return Promise.all(list.map(item => anAsyncFunction(item)))
+//   }
 
 // new farm
 router.post('/', async (req, res) => {
