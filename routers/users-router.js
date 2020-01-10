@@ -46,11 +46,9 @@ router.get('/:id', async (req, res) => {
 
 // put by token
 router.put('/user', async (req, res) => {
-    const newValues = {isFarmer, farmID, email, username, name, zipCode, addressStreet, addressCity, addressState } = req.body;
+    const { isFarmer, farmID, email, username, name, zipCode, addressStreet, addressCity, addressState } = req.body;
+    const newValues = {isFarmer, farmID, email, username, name, zipCode, addressStreet, addressCity, addressState };
     let { password, newPassword } = req.body;
-    if (newPassword === undefined){
-        newPassword = '';
-    }
     console.log('updating user- newValues: ', newValues);
     for(let val in newValues){
         if(typeof newValues[val] === 'string'){
@@ -89,11 +87,8 @@ router.put('/user', async (req, res) => {
             .first();
 
         if(user && bcrypt.compareSync(password, user.password)){
-            if(newPassword.length > 0){
+            if(newPassword){
                 password = bcrypt.hashSync(newPassword, 12);
-            }
-            else{
-                newPassword = false;
             }
             const updated = await userDb.update(req.user.id, newPassword ? {...newValues, password} : {...newValues});
             if(updated){
