@@ -160,17 +160,16 @@ router.post('/', async (req, res) => {
         const postman = await db.transaction(async trx => {
             try{
                 const orderAdded = await trx(table)
-                .insert({...order}, 'id')
-                .first();
+                .insert({...order}, 'id');
 
                 console.log('orderAdded: ', orderAdded)
                 const productsAdded = ''
                 const supplyUpdated = ''
                 if (orderAdded){
-                    console.log('orderAdded inside: ', orderAdded)
+                    console.log('orderAdded inside: ', orderAdded[0])
                     for (let q = 0; q < orderedProducts.length; q++){
                         let opAdded = await trx('orderedProducts')
-                        .insert({...orderedProducts[q], orderID: orderAdded});
+                        .insert({...orderedProducts[q], orderID: orderAdded[0]});
                         let suppUpdated = await trx('supply')
                         .where({id: orderedProducts[q].supplyID})
                         .update({quantity: quantityArray[q]});
