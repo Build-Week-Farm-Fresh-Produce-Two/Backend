@@ -301,7 +301,7 @@ try{
     if(err === 1){
         res.status(400).json({message: `Missing field: ${badValue}`});
     }else if(err === 2){
-        res.status(400).json({message: `${badValue} must be a positive number`});
+        res.status(400).json({message: `${badValue} must be a number and must be positive`});
     }else if(err === 3){
         res.status(400).json({message: `${badValue} must be a string`});
     }else if(err === 4){
