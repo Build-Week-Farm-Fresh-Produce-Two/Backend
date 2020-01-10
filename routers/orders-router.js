@@ -139,7 +139,7 @@ router.post('/', async (req, res) => {
                                 errorMessage = `Supply product measurement (${supplyCheck[s].measurementType}) should equal orderedProduct measurement (${orderedProducts[i].purchasedMeasurementType})`;
                                 throw 3
                             }
-                            quantityArray[i] = supplyCheck[s].quantity - orderedProducts[purchasedQuantity];
+                            quantityArray[i] = supplyCheck[s].quantity - orderedProducts[i].purchasedQuantity;
                             break;
                         }
                         if (s === supplyCheck.length-1){
