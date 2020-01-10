@@ -17,7 +17,7 @@ function getOrderedProducts(orderID){
 }
 function getAllOrderedProducts(orderArray){
     let newArray = orderArray.map(order => {
-        let OP = db('orderedProducts as op')
+        let OP = await db('orderedProducts as op')
         .where({'op.orderID': order.id})
         .select('op.*');
         return {...order, orderedProducts: OP}
