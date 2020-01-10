@@ -46,7 +46,7 @@ router.get('/:id', async (req, res) => {
 
 // put by token
 router.put('/user', async (req, res) => {
-    const newValues = {isFarmer, farmID, email, username, name, zipCode, addressStreet, addressCity, addressState } = req.body;
+    const newValues = {isFarmer, farmID, email, username, password, name, zipCode, addressStreet, addressCity, addressState } = req.body;
     const {password, newPassword} = req.body;
     console.log('updating user- newValues: ', newValues);
     for(let val in newValues){
@@ -76,7 +76,7 @@ router.put('/user', async (req, res) => {
             .where({email: newValues.email})
             .first();
 
-            if(foundEmail && foundEmail.email !== newValues.email){
+            if(foundEmail){
                 throw 4
             }
         }
