@@ -162,19 +162,22 @@ router.post('/', async (req, res) => {
                 const orderAdded = await trx(table)
                 .insert({...order}, 'id');
 
+                console.log('orderAdded: ', orderAdded)
                 const productsAdded = ''
                 const supplyUpdated = ''
-
-                for (let q = 0; q < orderedProducts.length; q++){
-                    let opAdded = await trx('orderedProducts')
-                    .insert(orderedProducts[q]);
-                    let suppUpdated = await trx('supply')
-                    .where({id: orderedProducts[q].supplyID})
-                    .update({quantity: quantityArray[q]});
-                    if (opAdded && suppUpdated && q === orderedProducts.length-1){
-                        productsAdded = true;
-                    }
-                } 
+                if (orderAdded){
+                    console.log('orderAdded inside: ', orderAdded)
+                    for (let q = 0; q < orderedProducts.length; q++){
+                        let opAdded = await trx('orderedProducts')
+                        .insert({...orderedProducts[q], orderID: orderArray});
+                        let suppUpdated = await trx('supply')
+                        .where({id: orderedProducts[q].supplyID})
+                        .update({quantity: quantityArray[q]});
+                        if (opAdded && suppUpdated && q === orderedProducts.length-1){
+                            productsAdded = true;
+                        }
+                    } 
+                }
                 if(orderAdded && productsAdded && supplyUpdated){
                     return true;
                 }
