@@ -65,8 +65,8 @@ https://bestfarm.herokuapp.com/api/
     | -------------------- |:------:|:--------:|:---------: |:------------------------:| ------------------------------------ |
     | /orders/             | POST   |    false | Required   | Order, OrderedProducts[] | Create new order                     |
     | /orders/             | GET    |     True | Required   | None                     | Get all orders (debug only, remove)  |
-    | /orders/farm/        | GET    |    false | Required   | None                     | Get order by farm by token           |
-    | /orders/user/        | GET    |    false | Required   | None                     | Get order by user by token           |
+    | /orders/farm/        | GET    |     True | Required   | None                     | Get order by farm by token           |
+    | /orders/user/        | GET    |     True | Required   | None                     | Get order by user by token           |
     | /orders/user/farm    | GET    |    false | Required   | None                     | Get order by user and farm by params |
     | /orders/:id          | PUT    |    false | Required   | Order, OrderedProducts[] | Update supply by supply ID.          |
     | /orders/:id          | DELETE |    false | Required   | password                 | Delete supply by supply ID.          |
@@ -74,7 +74,6 @@ https://bestfarm.herokuapp.com/api/
     create- loop through product in req.body, test for bad entries and then add to OP table (after creating order) use a transaction so if one fails nothing is added
 
     read- 
-    get all orders, debug only
     getbyorderid(user is employee or customer), 
     getbycustomerid(token, user is customer only), 
     getbyfarmid(token)(user is employee), 
