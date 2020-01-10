@@ -12,6 +12,8 @@ router.post('/', async (req, res) => {
     console.log('Creating new product:  ', product);
     let missing = ''
 
+    
+
     try{
         if(!name){
             missing= 'name';
@@ -20,7 +22,14 @@ router.post('/', async (req, res) => {
             missing= 'description';
             throw 1
         }
-        
+        const isFarmerCheck = await dbMethods.findById('users', req.users.id);
+        if (isFarmerCheck){
+            if (!isFarmerCheck.isFarmer)
+            {
+                throw 2
+            }
+        }
+
         const [productID] = await dbMethods.add(table, req.body);
         
         if(productID){
@@ -36,6 +45,9 @@ router.post('/', async (req, res) => {
     }catch(err){
         if(err === 1){
             res.status(400).json({message: `Missing field: ${missing}`});
+        }
+        if(err === 2){
+            res.status(400).json({message: 'Only farmers can add products.'});
         }else{
             console.log(err);
             res.status(500).json({message: 'Server could not add product.', error: err});
