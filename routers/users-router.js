@@ -100,11 +100,8 @@ router.put('/user', async (req, res) => {
                 throw 'User could not be updated'
             }
         }else{
-            throw 4
+            throw 5
         }
-
-        res.status(422).json({message: `Username '${username}' is already in use.`});
-
     }catch(err){
         if(err === 1){
             res.status(400).json({message: 'Current password is required.'});
