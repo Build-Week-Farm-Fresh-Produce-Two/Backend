@@ -368,7 +368,7 @@ router.delete('/:id', async (req, res) => {
             res.status(404).json({message: `Supply with ID ${req.params.id} not found.`});
         }
         console.log('Delete supply by id 500 catch error: ', err);
-        res.status(500).json({message: 'hi pam check slack Error deleting supply.', error: err});
+        res.status(500).json({message: 'Error deleting supply.', error: err});
     }
 });
 
