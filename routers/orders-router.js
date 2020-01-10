@@ -15,8 +15,6 @@ function getOrderedProducts(orderID){
     .where({'op.orderID': orderID})
     .select('op.*')
 }
-
-
 const functionWithPromise = order => { 
     //a function that returns a promise
     return Promise.resolve(db('orderedProducts as op')
@@ -121,10 +119,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-
-
-
-
 // get orders by farm by token
 router.get('/farm', async (req, res) => {
     try{
@@ -132,22 +126,29 @@ router.get('/farm', async (req, res) => {
         if(farm){
             const orders = await db('orders as o')
                 .where({farmID: farm.id})
-                .leftJoin('orderedProducts as op', 'op.orderID', 'o.supplyID')
-                .leftJoin('supply as s', 's.id', 'op.supplyID')
-                .select('op.*', 'o.*')
-            if(orders){
-                res.status(200).json(orders)
-            }else{
-                console.log('Get all orders 404 error', orders);
-                res.status(404).json({message: `Error loading orders`});
-            }
+                .select('o.*')
+                if(orders.length > 0){
+                    const ordersWithProducts = await getAllOrderedProducts(orders);
+                    if (ordersWithProducts.length > 0){
+                        // console.log('ordersWithProducts success: ', ordersWithProducts);
+                        res.status(200).json(ordersWithProducts);
+                    }
+                    else{
+                        // console.log('ordersWithProducts error: ', ordersWithProducts);
+                        res.status(404).json({message: `Error loading ordersWithProducts`});
+                    }
+                    // res.status(200).json(orders)
+                }else{
+                    console.log('Get orders by farm 404 error', orders);
+                    res.status(404).json({message: 'No orders found'});
+                }
         }
         else{
             res.status(404).json({message: 'Farm with specified ID not found'});
         }
     }catch(err){
         console.log(err);
-        res.status(500).json({message: 'Error getting farm by token.'});
+        res.status(500).json({message: 'Error getting orders by farmID by token.'});
     }
 });
 
@@ -155,25 +156,26 @@ router.get('/farm', async (req, res) => {
 router.get('/user', async (req, res) => {
     try{
         const orders = await db('orders as o')
-            .where({farmID: farm.id})
-            .leftJoin('orderedProducts as op', 'op.orderID', 'o.id')
-            .leftJoin('supply as s', 's.id', 'op.supplyID')
-            .leftJoin('products as p', 'p.id', 's.productID')
-            .select('op.*', 'o.*')
-        if(orders){
-            if (orders.length > 0){
-                res.status(200).json(orders)
+        .where({customerID: req.user.id})
+        .select('o.*')
+        if(orders.length > 0){
+            const ordersWithProducts = await getAllOrderedProducts(orders);
+            if (ordersWithProducts.length > 0){
+                // console.log('ordersWithProducts success: ', ordersWithProducts);
+                res.status(200).json(ordersWithProducts);
             }
             else{
-                res.status(404).json({message: `No orders found for user with ID of ${req.user.id}`});
+                // console.log('ordersWithProducts error: ', ordersWithProducts);
+                res.status(404).json({message: `Error loading ordersWithProducts`});
             }
+            // res.status(200).json(orders)
         }else{
-            console.log('Get orders by user by token 404 error', orders);
-            res.status(404).json({message: `Error loading orders`});
+            console.log('Get orders by farm 404 error', orders);
+            res.status(404).json({message: 'No orders found'});
         }
     }catch(err){
         console.log(err);
-        res.status(500).json({message: 'Error getting orders by user by token.'});
+        res.status(500).json({message: 'Error getting orders by userID by token.'});
     }
 });
 
