@@ -63,17 +63,18 @@ https://bestfarm.herokuapp.com/api/
 - ### orders
     | Path                 | Type   | Deployed | Auth (JWT) | Body                     | Description                          |
     | -------------------- |:------:|:--------:|:---------: |:------------------------:| ------------------------------------ |
-    | /orders/             | POST   |    false | Required   | Order, OrderedProducts[] | Create new order                     |
+    | /orders/             | POST   |     True | Required   | Order, OrderedProducts[] | Create new order                     |
     | /orders/             | GET    |     True | Required   | None                     | Get all orders (debug only, remove)  |
     | /orders/farm/        | GET    |     True | Required   | None                     | Get order by farm by token           |
     | /orders/user/        | GET    |     True | Required   | None                     | Get order by user by token           |
     | /orders/:user/:farm  | GET    |     True | Required   | None                     | Get order by user and farm by params |
     | /orders/:id          | GET    |     True | Required   | None                     | Get order by param ID                |
-    | /orders/:id          | PUT    |    false | Required   | Order, OrderedProducts[] | Update order by order ID.            |
-    | /orders/:id          | DELETE |    false | Required   | password                 | Delete order by order ID.            |
+    | /orders/:id          | PUT    |    False | Required   | Order, OrderedProducts[] | Update order by order ID.            |
+    | /orders/:id          | DELETE |    False | Required   | password                 | Delete order by order ID.            |
+    #### Update/Delete: disabled. 
+    >No refunds!
 
-    create- loop through product in req.body, test for bad entries and then add to OP table (after creating order) use a transaction so if one fails nothing is added
+    #### Future:
+    >Allow refunds/order modifications
     
-    update- only allowed by employee for like if something was refunded.. maybe add this in future
-
-    delete by orderid, delete all orderid rows in OP
+    >Implement payments api and order status tracking (paid, shipped, etc)
