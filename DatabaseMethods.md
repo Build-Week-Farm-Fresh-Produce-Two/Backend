@@ -1,4 +1,5 @@
-### methods TBD:
+May write this dock in the future to explain how the database is being interacted with by the routes.
+<!-- ### methods TBD:
 
 - [ ] users
     - [ ] -new user- if farmer, select farm from dropdown or search
@@ -22,4 +23,4 @@
     - [ ] -new supply
     - [ ] -get supply
     - [ ] -update supply (more grown or products sold)
-    - [ ] -delete supply (if product no longer carried by farm)
+    - [ ] -delete supply (if product no longer carried by farm) -->
