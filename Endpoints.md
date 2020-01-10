@@ -67,19 +67,13 @@ https://bestfarm.herokuapp.com/api/
     | /orders/             | GET    |     True | Required   | None                     | Get all orders (debug only, remove)  |
     | /orders/farm/        | GET    |     True | Required   | None                     | Get order by farm by token           |
     | /orders/user/        | GET    |     True | Required   | None                     | Get order by user by token           |
-    | /orders/:user/:farm  | GET    |    false | Required   | None                     | Get order by user and farm by params |
-    | /orders/:id          | GET    |    false | Required   | None                     | Get order by param ID                |
+    | /orders/:user/:farm  | GET    |     True | Required   | None                     | Get order by user and farm by params |
+    | /orders/:id          | GET    |     True | Required   | None                     | Get order by param ID                |
     | /orders/:id          | PUT    |    false | Required   | Order, OrderedProducts[] | Update order by order ID.            |
     | /orders/:id          | DELETE |    false | Required   | password                 | Delete order by order ID.            |
 
     create- loop through product in req.body, test for bad entries and then add to OP table (after creating order) use a transaction so if one fails nothing is added
-
-    read- 
-    getbyorderid(user is employee or customer), 
-    getbyfarmid(token) and customer id(user === customer or farm employee)
     
     update- only allowed by employee for like if something was refunded.. maybe add this in future
 
     delete by orderid, delete all orderid rows in OP
-
-    orders by user by farm- all orders from customer, must be employee of farm
