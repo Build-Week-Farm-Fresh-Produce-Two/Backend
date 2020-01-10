@@ -39,10 +39,7 @@ function getAllOrderedProducts(orderArray){
         .then((res)=>{
             console.log('getAllOrderedProducts map success: ', res);
             return {...order, orderedProducts: res}
-        })
-        .catch(err)(
-            console.log('getAllOrderedProducts map error: ', err)
-        );
+        });
     })
     return newArray;
 }
