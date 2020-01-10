@@ -88,14 +88,21 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     try{
         const orders = await db('orders as o')
-            .leftJoin('orderedProducts as op', 'op.orderID', 'o.id')
-            .leftJoin('supply as s', 's.id', 'op.supplyID')
-            .select('op.*', 'o.*')
-        if(orders){
-            res.status(200).json(orders)
+            .select('o.*')
+        if(orders.length > 0){
+            const ordersWithProducts = await getAllOrderedProducts(orders);
+            if (ordersWithProducts.length > 0){
+                console.log('ordersWithProducts success: ', ordersWithProducts);
+                res.status(200).json(ordersWithProducts);
+            }
+            else{
+                console.log('ordersWithProducts error: ', ordersWithProducts);
+                res.status(404).json({message: `Error loading ordersWithProducts`});
+            }
+            // res.status(200).json(orders)
         }else{
             console.log('Get all orders 404 error', orders);
-            res.status(404).json({message: `Error loading orders`});
+            res.status(404).json({message: 'No orders found'});
         }
     }catch(err){
         console.log('Get all orders 500 error', err);
