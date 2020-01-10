@@ -17,56 +17,24 @@ function getOrderedProducts(orderID){
 }
 
 
-const functionWithPromise = order => { //a function that returns a promise
+const functionWithPromise = order => { 
+    //a function that returns a promise
     return Promise.resolve(db('orderedProducts as op')
     .where({'op.orderID': order.id})
     .select('op.*')
     .then((res)=>{
-        console.log('getAllOrderedProducts map success: ', res);
-        console.log('old object: ', order)
-        console.log('new obj test:', {...order, orderedProducts: [...res]})
+        // console.log('getAllOrderedProducts map success: ', res);
+        // console.log('old object: ', order)
+        // console.log('new obj test:', {...order, orderedProducts: [...res]})
         return {...order, orderedProducts: [...res]}
     }))
-  }
-  
-  const anAsyncFunction = async order => {
-    return functionWithPromise(order)
-  }
-  
-  const getAllOrderedProducts = async (orderArray) => {
-    return Promise.all(orderArray.map(order => anAsyncFunction(order)))
-  }
-
-
-// const getAllOrderedProducts = async (orderArray) => {
-//     return orderArray.map(order => {
-//         functionWithPromise(order);
-//     })
-//     // console.log('old array: ', orderArray);
-//     // console.log('new array: ', newArray);
-//     // if (newArray.length > 0 && newArray[0] !== undefined && newArray[newArray.length-1] !== undefined){
-//     //     return newArray;
-//     // }
-// }
-
-// const getAllOrderedProducts = async (orderArray) => {
-//     return orderArray.map(order => {
-//         db('orderedProducts as op')
-//         .where({'op.orderID': order.id})
-//         .select('op.*')
-//         .then((res)=>{
-//             console.log('getAllOrderedProducts map success: ', res);
-//             console.log('old object: ', order)
-//             console.log('new obj test:', {...order, orderedProducts: [...res]})
-//             return {...order, orderedProducts: [...res]}
-//         });
-//     })
-//     // console.log('old array: ', orderArray);
-//     // console.log('new array: ', newArray);
-//     // if (newArray.length > 0 && newArray[0] !== undefined && newArray[newArray.length-1] !== undefined){
-//     //     return newArray;
-//     // }
-// }
+} 
+const anAsyncFunction = async order => {
+return functionWithPromise(order)
+}
+const getAllOrderedProducts = async (orderArray) => {
+return Promise.all(orderArray.map(order => anAsyncFunction(order)))
+}
 
 // new farm
 router.post('/', async (req, res) => {
@@ -135,11 +103,11 @@ router.get('/', async (req, res) => {
         if(orders.length > 0){
             const ordersWithProducts = await getAllOrderedProducts(orders);
             if (ordersWithProducts.length > 0){
-                console.log('ordersWithProducts success: ', ordersWithProducts);
+                // console.log('ordersWithProducts success: ', ordersWithProducts);
                 res.status(200).json(ordersWithProducts);
             }
             else{
-                console.log('ordersWithProducts error: ', ordersWithProducts);
+                // console.log('ordersWithProducts error: ', ordersWithProducts);
                 res.status(404).json({message: `Error loading ordersWithProducts`});
             }
             // res.status(200).json(orders)
