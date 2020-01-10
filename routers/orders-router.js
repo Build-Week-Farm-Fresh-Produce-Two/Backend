@@ -187,7 +187,7 @@ router.get('/:id', async (req, res) => {
         if(order.length > 0){
             if (req.user.id === order[0].customerID || req.user.farmID === order[0].farmID)
             {
-                const ordersWithProducts = await getAllOrderedProducts(orders);
+                const ordersWithProducts = await getAllOrderedProducts(order);
                 if (ordersWithProducts.length > 0){
                     // console.log('ordersWithProducts success: ', ordersWithProducts);
                     res.status(200).json(ordersWithProducts);
