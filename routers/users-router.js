@@ -109,11 +109,11 @@ router.put('/user', async (req, res) => {
         }if(err === 2){
             res.status(400).json({message: 'Username must only contain characters A-Z, _, and 0-9. Username must start with a letter.'});
         }if(err === 3){
-            res.status(422).json({message: `Username '${username}' is already in use.`});
+            res.status(409).json({message: `Username '${username}' is already in use.`});
         }if(err === 4){
-            res.status(422).json({message: `Email '${email}' is already in use.`});
+            res.status(409).json({message: `Email '${email}' is already in use.`});
         }if(err === 5){
-            res.status(400).json({message: 'Invalid credentials'});
+            res.status(403).json({message: 'Invalid credentials'});
         }
 
         // if(err === 1){
