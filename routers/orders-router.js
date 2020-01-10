@@ -160,7 +160,8 @@ router.post('/', async (req, res) => {
         const postman = await db.transaction(async trx => {
             try{
                 const orderAdded = await trx(table)
-                .insert({...order}, 'id');
+                .insert({...order}, 'id')
+                .first();
 
                 console.log('orderAdded: ', orderAdded)
                 const productsAdded = ''
