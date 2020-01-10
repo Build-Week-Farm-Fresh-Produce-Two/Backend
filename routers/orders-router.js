@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
     let quantityArray = [];
     console.log('Creating new order:  ', order);
     let badValue = '';
-    let badValueIndex = '';
+    let errorMessage = '';
 
     try{
     // #region error checkers
@@ -128,13 +128,16 @@ router.post('/', async (req, res) => {
                     for (let s = 0; s < supplyCheck.length; s++){
                         if (supplyCheck[s].id === orderedProducts[i].supplyID){
                             if (supplyCheck[s].quantity < orderedProducts[i].purchasedQuantity){
-                                res.status(404).json({message: `You cannot purchase more products than are in stock. Bad value: orderedProducts[${i}] - ${orderedProducts[i].productName}`});    
+                                errorMessage = `You cannot purchase more products than are in stock. Bad value: orderedProducts[${i}] - ${orderedProducts[i].productName}`;   
+                                throw 3
                             }
                             if (supplyCheck[s].price !== orderedProducts[i].purchasedPrice){
-                                res.status(404).json({message: `Supply product price (${supplyCheck[s].price}) should equal orderedProduct purchase price (${orderedProducts[i].purchasedPrice})`});
+                                errorMessage = `Supply product price (${supplyCheck[s].price}) should equal orderedProduct purchase price (${orderedProducts[i].purchasedPrice})`;
+                                throw 3
                             }
                             if (supplyCheck[s].measurementType !== orderedProducts[i].purchasedMeasurementType){
-                                res.status(404).json({message: `Supply product measurement (${supplyCheck[s].measurementType}) should equal orderedProduct measurement (${orderedProducts[i].purchasedMeasurementType})`});
+                                errorMessage = `Supply product measurement (${supplyCheck[s].measurementType}) should equal orderedProduct measurement (${orderedProducts[i].purchasedMeasurementType})`;
+                                throw 3
                             }
                             quantityArray[i] = supplyCheck[s].quantity - orderedProducts[purchasedQuantity];
                             break;
@@ -188,6 +191,8 @@ router.post('/', async (req, res) => {
             res.status(400).json({message: `Missing field: ${badValue}`});
         }else if(err === 2){
             res.status(400).json({message: `${badValue} must be a number and must be positive`});
+        }else if(err === 3){
+            res.status(403).json({message: errorMessage});
         }else{
             console.log(err);
             res.status(500).json({message: 'Server could not add farm.', error: err});
