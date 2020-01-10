@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
             missing= 'description';
             throw 1
         }
-        const isFarmerCheck = await dbMethods.findById('users', req.users.id);
+        const isFarmerCheck = await dbMethods.findById('users', req.user.id);
         if (isFarmerCheck){
             if (!isFarmerCheck.isFarmer)
             {
