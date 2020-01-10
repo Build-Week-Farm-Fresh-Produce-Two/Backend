@@ -59,24 +59,35 @@ raw Markdown line up prettily. You can also use inline Markdown. -->
 | productID       | Integer (FKEY) |     True |
 | measurementType | String         |     True |
 | quantity        | Integer        |     True |
-| price           | Integer        |     True |
+| price           | Decimal        |     True |
 >price is per unit of measurement
 
 ## orders
 | Variable          | Type           | Required |
 | ----------------- |:--------------:| --------:|
 | id                | Auto-generated |     True |
-| farmID            | Integer (FKEY) |    FALSE |
-| customerID        | Integer (FKEY) |    FALSE |
-| totalPrice        | Integer        |     True |
+| farmID            | Integer (FKEY) |    False |
+| customerID        | Integer (FKEY) |    False |
+| farmName          | String         |     True |
+| customerName      | String         |     True |
+| totalPrice        | Decimal        |     True |
 | paymentStatus     | Boolean        |     True |
 | fulfillmentStatus | Boolean        |     True |
 >The two fkeys allow null in case either thing is deleted, but should be considered required.
 
+>Farm/Customer name is required and separate from other tables to protect order records from updates and deletes to other records.
+
 ## orderedProducts
-| Variable      | Type           | Required |
-| ------------- |:--------------:| --------:|
-| orderID       | Integer (FKEY) |     True |
-| supplyID      | Integer (FKEY) |    FALSE |
-| quantity      | Integer        |     True |
+| Variable                 | Type           | Required |
+| ------------------------ |:--------------:| --------:|
+| orderID                  | Integer (FKEY) |     True |
+| supplyID                 | Integer (FKEY) |    False |
+| productName              | String         |     True |
+| productDescription       | String         |     True |
+| productImageURL          | String         |    False |
+| purchasedMeasurementType | String         |     True |
+| purchasedQuantity        | Integer        |     True |
+| purchasedPrice           | Decimal        |     True |
 >The supplyID allows null in case owner supply is deleted, but should be considered required.
+
+>Product/Purchased info is required and separate from product tables to protect order records from updates and deletes to product records.

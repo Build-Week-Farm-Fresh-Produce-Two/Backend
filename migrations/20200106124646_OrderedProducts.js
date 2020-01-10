@@ -13,9 +13,19 @@ exports.up = function(knex) {
             .references('id')
             .inTable('supply')
             .onDelete('SET NULL')
-        tbl.integer('quantity', 255)
+        tbl.string('productName', 255)
+            .notNullable();
+        tbl.string('productDescription', 255)
+            .notNullable();
+        tbl.string('productImageURL', 255)
+        tbl.string('purchasedMeasurementType', 255)
+            .notNullable();
+        tbl.integer('purchasedQuantity', 255)
             .unsigned()
             .notNullable()
+        tbl.decimal('purchasedPrice', [null])
+            .unsigned()
+            .notNullable();
     })
 };
 

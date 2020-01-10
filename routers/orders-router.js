@@ -5,6 +5,26 @@ const db = require('../data/db-config.js');
 
 const table = 'orders';
 
+function getOrder(orderID){
+    return db('orders as o')
+    .where({'o.id': orderID})
+    .select('o.*')
+}
+function getOrderedProducts(orderID){
+    return db('orderedProducts as op')
+    .where({'op.orderID': orderID})
+    .select('op.*')
+}
+function getAllOrderedProducts(orderArray){
+    let newArray = orderArray.map(order => {
+        let OP = db('orderedProducts as op')
+        .where({'op.orderID': order.id})
+        .select('op.*');
+        return {...order, orderedProducts: OP}
+    })
+    return newArray;
+}
+
 // new farm
 router.post('/', async (req, res) => {
     const farm = { name, addressStreet, addressCity, addressState, zipCode } = req.body;
@@ -69,6 +89,7 @@ router.get('/', async (req, res) => {
     try{
         const orders = await db('orders as o')
             .leftJoin('orderedProducts as op', 'op.orderID', 'o.id')
+            .leftJoin('supply as s', 's.id', 'op.supplyID')
             .select('op.*', 'o.*')
         if(orders){
             res.status(200).json(orders)
@@ -82,8 +103,64 @@ router.get('/', async (req, res) => {
     }
 });
 
+
+
+
+
 // get orders by farm by token
 router.get('/farm', async (req, res) => {
+    try{
+        const farm = await dbMethods.findById('farms', req.user.farmID);
+        if(farm){
+            const orders = await db('orders as o')
+                .where({farmID: farm.id})
+                .leftJoin('orderedProducts as op', 'op.orderID', 'o.supplyID')
+                .leftJoin('supply as s', 's.id', 'op.supplyID')
+                .select('op.*', 'o.*')
+            if(orders){
+                res.status(200).json(orders)
+            }else{
+                console.log('Get all orders 404 error', orders);
+                res.status(404).json({message: `Error loading orders`});
+            }
+        }
+        else{
+            res.status(404).json({message: 'Farm with specified ID not found'});
+        }
+    }catch(err){
+        console.log(err);
+        res.status(500).json({message: 'Error getting farm by token.'});
+    }
+});
+
+// Get orders by user by token
+router.get('/user', async (req, res) => {
+    try{
+        const orders = await db('orders as o')
+            .where({farmID: farm.id})
+            .leftJoin('orderedProducts as op', 'op.orderID', 'o.id')
+            .leftJoin('supply as s', 's.id', 'op.supplyID')
+            .leftJoin('products as p', 'p.id', 's.productID')
+            .select('op.*', 'o.*')
+        if(orders){
+            if (orders.length > 0){
+                res.status(200).json(orders)
+            }
+            else{
+                res.status(404).json({message: `No orders found for user with ID of ${req.user.id}`});
+            }
+        }else{
+            console.log('Get orders by user by token 404 error', orders);
+            res.status(404).json({message: `Error loading orders`});
+        }
+    }catch(err){
+        console.log(err);
+        res.status(500).json({message: 'Error getting orders by user by token.'});
+    }
+});
+
+// Get order by user and farm by params
+router.get('/user/farm', async (req, res) => {
     try{
         const farm = await dbMethods.findById(table, req.user.farmID);
         if(farm){
@@ -108,26 +185,6 @@ router.get('/farm', async (req, res) => {
     }
 });
 
-// get all owners
-router.get('/owners', async (req, res) => {
-    try{
-        const owner = await db('farmOwner')
-        .select('farmOwner.*')
-        if (owner){
-            res.status(200).json(owner);
-        }
-        else {
-            res.status(404).json({message: `Owners not found`});
-        }
-    }catch(err){
-        console.log('Get all owners error: ', err);
-        switch(err){
-            default: res.status(500).json({message: 'Error getting farm owner information'});
-                break;
-        }
-    }
-});
-
 // get order by param id
 router.get('/:id', async (req, res) => {
     try{
@@ -147,6 +204,14 @@ router.get('/:id', async (req, res) => {
         }
     }
 });
+
+
+
+
+
+
+
+
 
 // update farm by id, can also update owner
 router.put('/:id', async (req, res) => {
