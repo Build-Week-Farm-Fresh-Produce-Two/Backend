@@ -101,7 +101,6 @@ router.post('/', async (req, res) => {
         }
     }
 });
-
 // get all supplies
 router.get('/', async (req, res) => {
     try{
@@ -119,7 +118,6 @@ router.get('/', async (req, res) => {
         res.status(500).json({message: 'Error getting all supplies.'});
     }
 });
-
 // get supplies by farm by token
 router.get('/farm', async (req, res) => {
     try{
@@ -158,7 +156,6 @@ router.get('/farm', async (req, res) => {
         res.status(500).json({message: 'Error getting farm by token.'});
     }
 });
-
 // get supplies by farm by ID
 router.get('/farm/:id', async (req, res) => {
     try{
@@ -190,7 +187,6 @@ router.get('/farm/:id', async (req, res) => {
         res.status(500).json({message: `Error getting farm by id: ${req.params.id}`, err});
     }
 });
-
 // get farms and supply by product ID
 router.get('/product/:id', async (req, res) => {
     try{
@@ -227,108 +223,94 @@ router.get('/product/:id', async (req, res) => {
         res.status(500).json({message: 'Error getting supplies by product ID.'});
     }
 });
-
 // update supply by id
 router.put('/:id', async (req, res) => {const { farmID, productID, measurementType, quantity, price } = req.body;
-console.log('Creating new supply:  ', req.body);
-let badValue = ''
-try{
-    // #region error throws
-    if(!farmID){
-        badValue= 'farmID';
-        throw 1
-    }if(!productID){
-        badValue= 'productID';
-        throw 1
-    }if(!measurementType){
-        badValue= 'measurementType';
-        throw 1
-    }if(!quantity){
-        badValue= 'quantity';
-        throw 1
-    }if(!price){
-        badValue= 'price';
-        throw 1
-    }if (Math.sign(farmID) !== 1){
-        badValue= 'farmID';
-        throw 2
-    }if (Math.sign(productID) !== 1){
-        badValue= 'productID';
-        throw 2
-    }if (Math.sign(quantity) !== 1){
-        badValue= 'quantity';
-        throw 2
-    }if (Math.sign(price) !== 1){
-        badValue= 'price';
-        throw 2
-    }if (!isNaN(measurementType)){
-        badValue= 'measurementType';
-        throw 3
-    }
-    const farmCheck = await dbMethods.findById('farms', farmID);
-    if (!farmCheck){
-        throw 4
-    }
-    else if (farmCheck)
-    {
-        console.log('farmCheck', farmCheck);
-        console.log('user farmID', req.user.farmID);
-        if (farmCheck.id !== req.user.farmID){
-            throw 6
+    console.log('Creating new supply:  ', req.body);
+    let badValue = ''
+    try{
+        // #region error throws
+        if(!farmID){
+            badValue= 'farmID';
+            throw 1
+        }if(!productID){
+            badValue= 'productID';
+            throw 1
+        }if(!measurementType){
+            badValue= 'measurementType';
+            throw 1
+        }if(!quantity){
+            badValue= 'quantity';
+            throw 1
+        }if(!price){
+            badValue= 'price';
+            throw 1
+        }if (Math.sign(farmID) !== 1){
+            badValue= 'farmID';
+            throw 2
+        }if (Math.sign(productID) !== 1){
+            badValue= 'productID';
+            throw 2
+        }if (Math.sign(quantity) !== 1){
+            badValue= 'quantity';
+            throw 2
+        }if (Math.sign(price) !== 1){
+            badValue= 'price';
+            throw 2
+        }if (!isNaN(measurementType)){
+            badValue= 'measurementType';
+            throw 3
+        }
+        const farmCheck = await dbMethods.findById('farms', farmID);
+        if (!farmCheck){
+            throw 4
+        }
+        else if (farmCheck)
+        {
+            console.log('farmCheck', farmCheck);
+            console.log('user farmID', req.user.farmID);
+            if (farmCheck.id !== req.user.farmID){
+                throw 6
+            }
+        }
+        const supplyCheck = await dbMethods.findById(table, req.params.id);
+        if (!supplyCheck){
+            throw 5
+        }
+        // if ()
+        // #endregion
+        const newSupply = await dbMethods.update(table, req.params.id, {measurementType, quantity, price});
+        
+        if(newSupply){
+            console.log('New Supply id: ', newSupply);
+            const supplies = await db('supply as s')
+            .where({'s.id': newSupply})
+            .leftJoin('farms as f', 'f.id', 's.farmID')
+            .leftJoin('products as p', 'p.id', 's.productID')
+            .select('f.name as farmName', 'p.* as product', 's.*')
+            .first();
+            if(supplies){
+                res.status(200).json(supplies)
+            }
+        }
+    }catch(err){
+        if(err === 1){
+            res.status(400).json({message: `Missing field: ${badValue}`});
+        }else if(err === 2){
+            res.status(400).json({message: `${badValue} must be a number and must be positive`});
+        }else if(err === 3){
+            res.status(400).json({message: `${badValue} must be a string`});
+        }else if(err === 4){
+            res.status(404).json({message: `Farm with ID ${farmID} not found`});
+        }else if(err === 5){
+            res.status(409).json({message: `Supply with ID ${req.params.id} not found`});
+        }else if(err === 6){
+            res.status(403).json({message: `Only an employee of a farm may modify it's supply`});
+        }else{
+            console.log(err);
+            res.status(500).json({message: 'Server could not add supply.', error: err});
         }
     }
-    const supplyCheck = await dbMethods.findById(table, req.params.id);
-    if (!supplyCheck){
-        throw 5
-    }
-    // if ()
-    // #endregion
-    const newSupply = await dbMethods.update(table, req.params.id, {measurementType, quantity, price});
-    
-    if(newSupply){
-        console.log('New Supply id: ', newSupply);
-        const supplies = await db('supply as s')
-        .where({'s.id': newSupply})
-        .leftJoin('farms as f', 'f.id', 's.farmID')
-        .leftJoin('products as p', 'p.id', 's.productID')
-        .select('f.name as farmName', 'p.* as product', 's.*')
-        .first();
-        if(supplies){
-            res.status(200).json(supplies)
-        }
-    }
-}catch(err){
-    if(err === 1){
-        res.status(400).json({message: `Missing field: ${badValue}`});
-    }else if(err === 2){
-        res.status(400).json({message: `${badValue} must be a number and must be positive`});
-    }else if(err === 3){
-        res.status(400).json({message: `${badValue} must be a string`});
-    }else if(err === 4){
-        res.status(404).json({message: `Farm with ID ${farmID} not found`});
-    }else if(err === 5){
-        res.status(409).json({message: `Supply with ID ${req.params.id} not found`});
-    }else if(err === 6){
-        res.status(403).json({message: `Only an employee of a farm may modify it's supply`});
-    }else{
-        console.log(err);
-        res.status(500).json({message: 'Server could not add supply.', error: err});
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
 });
-
 // delete supply by id
 router.delete('/:id', async (req, res) => {
     const {password} = req.body;
