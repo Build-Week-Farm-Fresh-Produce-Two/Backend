@@ -185,6 +185,7 @@ router.get('/:user/:farm', async (req, res) => {
             res.status(400).json({message: 'User and Farm params must be a number and must be positive'});
         }
         if (req.user.id !== req.params.user && req.user.farmID !== req.params.farm){
+            console.log(`req.user.id: ${req.user.id}, req.params.user: ${req.params.user}, req.user.farmID: ${req.user.farmID}, req.params.farm: ${req.params.farm}`);
             res.status(403).json({message: 'You are not authorized to pull this order data'});
         }
 
@@ -212,7 +213,7 @@ router.get('/:user/:farm', async (req, res) => {
             }
             // res.status(200).json(orders)
         }else{
-            console.log('Get orders by farm 404 error', orders);
+            console.log('Get orders by farm 404 error');
             res.status(404).json({message: 'No orders found'});
         }
     }catch(err){
@@ -225,7 +226,7 @@ router.get('/:user/:farm', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try{
         const order = await db('orders as o')
-            .where({farmID: req.params.farm, customerID: req.params.user})
+            .where({id: req.params.id})
             .select('o.*')
         if(order.length > 0){
             if (req.user.id === order.customerID || req.user.farmID === order.farmID)
