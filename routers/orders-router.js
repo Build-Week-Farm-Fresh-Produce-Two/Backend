@@ -45,7 +45,7 @@ function getAllOrderedProducts(orderArray){
     })
     console.log('old array: ', orderArray);
     console.log('new array: ', newArray);
-    if (newArray.length > 0 && newArray[0] !== null && newArray[newArray.length-1] !== null){
+    if (newArray.length > 0 && newArray[0] !== undefined && newArray[newArray.length-1] !== undefined){
         return newArray;
     }
 }
