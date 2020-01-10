@@ -151,7 +151,6 @@ router.get('/farm', async (req, res) => {
         res.status(500).json({message: 'Error getting orders by farmID by token.'});
     }
 });
-
 // Get orders by user by token
 router.get('/user', async (req, res) => {
     try{
@@ -179,38 +178,71 @@ router.get('/user', async (req, res) => {
     }
 });
 
-// Get order by user and farm by params
-router.get('/user/farm', async (req, res) => {
+
+router.get('/:user/:farm', async (req, res) => {
     try{
-        const farm = await dbMethods.findById(table, req.user.farmID);
-        if(farm){
-            const orders = await db('orders as o')
-                .where({farmID: farm.id})
-                .leftJoin('supply as s', 's.farmID', req.user.farmID)
-                .leftJoin('orderedProducts as op', 'op.orderID', 'o.id')
-                .select('op.*', 'o.*')
-            if(orders){
-                res.status(200).json(orders)
-            }else{
-                console.log('Get all orders 404 error', orders);
-                res.status(404).json({message: `Error loading orders`});
-            }
+        if (Math.sign(req.params.user) !== 1 || Math.sign(req.params.farm) !== 1 ){
+            res.status(400).json({message: 'User and Farm params must be a number and must be positive'});
         }
-        else{
+        if (req.user.id !== req.params.user && req.user.farmID !== req.params.farm){
+            res.status(403).json({message: 'You are not authorized to pull this order data'});
+        }
+
+        const farmCheck = await dbMethods.findById('farms', req.params.farm);
+        if(!farmCheck){
             res.status(404).json({message: 'Farm with specified ID not found'});
+        }
+        const userCheck = await dbMethods.findById('users', req.params.user);
+        if(!userCheck){
+            res.status(404).json({message: 'User with specified ID not found'});
+        }
+
+        const orders = await db('orders as o')
+        .where({farmID: req.params.farm, customerID: req.params.user})
+        .select('o.*')
+        if(orders.length > 0){
+            const ordersWithProducts = await getAllOrderedProducts(orders);
+            if (ordersWithProducts.length > 0){
+                // console.log('ordersWithProducts success: ', ordersWithProducts);
+                res.status(200).json(ordersWithProducts);
+            }
+            else{
+                // console.log('ordersWithProducts error: ', ordersWithProducts);
+                res.status(404).json({message: `Error loading ordersWithProducts`});
+            }
+            // res.status(200).json(orders)
+        }else{
+            console.log('Get orders by farm 404 error', orders);
+            res.status(404).json({message: 'No orders found'});
         }
     }catch(err){
         console.log(err);
-        res.status(500).json({message: 'Error getting farm by token.'});
+        res.status(500).json({message: 'Error getting orders by farmID by token.'});
     }
 });
 
 // get order by param id
 router.get('/:id', async (req, res) => {
     try{
-        const farm = await dbMethods.findById(table, req.params.id);
-        if(farm){
-            res.status(200).json(farm);
+        const order = await db('orders as o')
+            .where({farmID: req.params.farm, customerID: req.params.user})
+            .select('o.*')
+        if(order.length > 0){
+            if (req.user.id === order.customerID || req.user.farmID === order.farmID)
+            {
+                const ordersWithProducts = await getAllOrderedProducts(orders);
+                if (ordersWithProducts.length > 0){
+                    // console.log('ordersWithProducts success: ', ordersWithProducts);
+                    res.status(200).json(ordersWithProducts);
+                }
+                else{
+                    // console.log('ordersWithProducts error: ', ordersWithProducts);
+                    res.status(404).json({message: `Error loading ordersWithProducts`});
+                }
+            }
+            else{
+                res.status(403).json({message: 'You are not authorized to pull this order data'});
+            }
         }else{
             throw 404;
         }
