@@ -186,7 +186,7 @@ router.get('/:user/:farm', async (req, res) => {
         }
         if (req.user.id !== req.params.user && req.user.farmID !== req.params.farm){
             console.log(`req.user.id: ${req.user.id}, req.params.user: ${req.params.user}, req.user.farmID: ${req.user.farmID}, req.params.farm: ${req.params.farm}`);
-            res.status(403).json({message: 'You are not authorized to pull this order data'});
+            throw 1;
         }
 
         const farmCheck = await dbMethods.findById('farms', req.params.farm);
@@ -217,6 +217,9 @@ router.get('/:user/:farm', async (req, res) => {
             res.status(404).json({message: 'No orders found'});
         }
     }catch(err){
+        if (err === 1){
+            res.status(403).json({message: 'You are not authorized to pull this order data'});
+        }
         console.log(err);
         res.status(500).json({message: 'Error getting orders by farmID by token.'});
     }
@@ -242,7 +245,7 @@ router.get('/:id', async (req, res) => {
                 }
             }
             else{
-                res.status(403).json({message: 'You are not authorized to pull this order data'});
+                throw 403
             }
         }else{
             throw 404;
@@ -250,6 +253,8 @@ router.get('/:id', async (req, res) => {
     }catch(err){
         console.log('Get farm by id error: ', err);
         switch(err){
+            case 403: res.status(403).json({message: 'You are not authorized to pull this order data'});
+                break;
             case 404: res.status(404).json({message: 'Farm with specified ID not found'});
                 break;
             default: res.status(500).json({message: 'Error getting farm information'});
