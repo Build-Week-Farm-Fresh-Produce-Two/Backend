@@ -1,4 +1,4 @@
-May write this dock in the future to explain how the database is being interacted with by the routes.
+May write this doc in the future to explain how the database is being interacted with by the routes.
 <!-- ### methods TBD:
 
 - [ ] users
